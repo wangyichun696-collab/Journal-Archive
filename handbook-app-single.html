@@ -1,0 +1,1975 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>手帐记录簿</title>
+    <style>
+
+:root {
+  color-scheme: light;
+  --number-font: "Poppins", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ink: #050505;
+  --muted: #96979c;
+  --paper: #ffffff;
+  --paper-deep: #f4f5f7;
+  --line: #eceef2;
+  --green: #44c7f3;
+  --red: #34bfee;
+  --blue: #4bc5f2;
+  --pink: #f4d7e6;
+  --gold: #ffd447;
+  --shadow: 0 22px 70px rgba(30, 36, 44, 0.11);
+  --soft-shadow: 0 18px 48px rgba(38, 45, 56, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 54% 5%, rgba(64, 199, 243, 0.18), transparent 34%),
+    linear-gradient(180deg, #f7fcff 0%, #ffffff 30%, #ffffff 100%);
+  color: var(--ink);
+  font-family:
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(360px, 480px);
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.sidebar {
+  min-height: 720px;
+  padding: 24px;
+  border: 1px solid rgba(235, 237, 241, 0.9);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 50%;
+  background: #050505;
+  color: white;
+  font-weight: 700;
+}
+
+.brand p,
+.brand span,
+.month-summary p,
+.month-summary span,
+.notebook-feature p,
+.material-card p {
+  margin: 0;
+}
+
+.brand p {
+  font-weight: 900;
+}
+
+.brand span,
+.month-summary span,
+.notebook-feature span,
+.material-card p,
+.material-card span,
+.link-panel p,
+.upload-box small {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.nav-list {
+  display: grid;
+  gap: 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #48443e;
+  text-align: left;
+}
+
+.nav-item.active {
+  background: #f0f1f4;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.calendar-icon {
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.calendar-icon::before {
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background: currentColor;
+  content: "";
+}
+
+.book-icon {
+  border: 2px solid currentColor;
+  border-left-width: 5px;
+  border-radius: 3px;
+}
+
+.tape-icon {
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.tape-icon::before {
+  position: absolute;
+  inset: 4px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  content: "";
+}
+
+.plus-icon::before,
+.plus-icon::after {
+  position: absolute;
+  inset: 8px 2px auto;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  content: "";
+}
+
+.plus-icon::after {
+  transform: rotate(90deg);
+}
+
+.user-icon {
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.user-icon::before,
+.user-icon::after {
+  position: absolute;
+  left: 50%;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.user-icon::before {
+  top: 3px;
+  width: 5px;
+  height: 5px;
+}
+
+.user-icon::after {
+  bottom: 3px;
+  width: 10px;
+  height: 5px;
+}
+
+.month-summary {
+  margin-top: 34px;
+  padding: 18px;
+  border-radius: 28px;
+  background: #f5f6f8;
+  border: 1px solid var(--line);
+}
+
+.month-summary strong {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 34px;
+}
+
+.phone-frame {
+  position: relative;
+  overflow: hidden;
+  min-height: 760px;
+  max-height: 860px;
+  border: 0;
+  border-radius: 42px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.mobile-topbar {
+  display: none;
+}
+
+.bottom-tabs {
+  display: none;
+}
+
+.view {
+  display: none;
+  min-height: 736px;
+  padding: 30px 24px 116px;
+}
+
+.view.active {
+  display: block;
+}
+
+.view-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: 52px;
+  line-height: 1.08;
+  font-weight: 950;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 950;
+}
+
+.month-switcher strong,
+.day-cell span,
+.day-cell small,
+.calendar-strip strong,
+.month-summary strong,
+.notebook-cover span,
+.page-thumb span,
+.material-card p,
+.profile-stat-card strong,
+.profile-stat-card small,
+input[type="date"],
+input[type="number"],
+#story-date,
+#story-meta {
+  font-family: var(--number-font);
+}
+
+.month-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px;
+  border: 0;
+  border-radius: 999px;
+  background: #f1f2f5;
+}
+
+.month-switcher button,
+.round-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.search-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 62px;
+  margin: 24px 0 34px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: #f0f1f4;
+  color: var(--muted);
+}
+
+.search-pill input {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.search-pill input::placeholder {
+  color: #9b9ca1;
+}
+
+.search-icon {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 4px solid #050505;
+  border-radius: 50%;
+}
+
+.search-icon::after {
+  position: absolute;
+  right: -9px;
+  bottom: -7px;
+  width: 13px;
+  height: 4px;
+  border-radius: 999px;
+  background: #050505;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.month-switcher strong {
+  font-size: 13px;
+}
+
+.calendar-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.calendar-strip div {
+  padding: 14px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf0;
+}
+
+.calendar-strip strong,
+.calendar-strip span {
+  display: block;
+  text-align: center;
+}
+
+.calendar-strip strong {
+  font-size: 20px;
+}
+
+.calendar-strip span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.week-row,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.week-row {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.day-cell {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1;
+  min-width: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 18px;
+  background: #f5f6f8;
+  color: #9a9ba0;
+  font-weight: 700;
+}
+
+.day-cell.has-entry {
+  overflow: hidden;
+  border-color: transparent;
+  color: #fff;
+  box-shadow:
+    inset 0 -34px 28px rgba(0, 0, 0, 0.2),
+    0 10px 22px rgba(30, 36, 44, 0.12);
+}
+
+.day-cell.today {
+  outline: 4px solid rgba(68, 199, 243, 0.28);
+  outline-offset: 2px;
+}
+
+.day-cell.selected {
+  outline: 3px solid #050505;
+  outline-offset: 2px;
+}
+
+.day-cell span {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.day-cell small {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  z-index: 2;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.day-art {
+  position: absolute;
+  inset: 0;
+}
+
+.home-add-button {
+  position: fixed;
+  left: 50%;
+  bottom: 102px;
+  z-index: 24;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #44c7f3;
+  color: #050505;
+  box-shadow: 0 8px 18px rgba(68, 199, 243, 0.28);
+  transform: translateX(-50%);
+}
+
+.home-add-button .plus-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.home-add-button .plus-icon::before,
+.home-add-button .plus-icon::after {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  width: 14px;
+  height: 2px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.home-add-button .plus-icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.subpage-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.back-button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f0f1f4;
+  color: #050505;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.record-view h1 {
+  font-size: 42px;
+}
+
+.source-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: none;
+}
+
+.source-sheet.open {
+  display: block;
+}
+
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(5px);
+}
+
+.sheet-panel {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  padding: 12px 14px 14px;
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 28px 80px rgba(30, 36, 44, 0.24);
+  backdrop-filter: blur(18px);
+}
+
+.sheet-handle {
+  width: 48px;
+  height: 5px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  background: #d2d4d9;
+}
+
+.sheet-panel h2,
+.sheet-panel p {
+  margin: 0;
+  text-align: center;
+}
+
+.sheet-panel h2 {
+  font-size: 24px;
+}
+
+.sheet-panel p {
+  margin-top: 5px;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.source-option,
+.source-cancel {
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 22px;
+  font-weight: 950;
+}
+
+.source-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  background: #f0f1f4;
+  color: #050505;
+  font-size: 18px;
+}
+
+.source-cancel {
+  margin-top: 4px;
+  background: #050505;
+  color: #ffffff;
+}
+
+.camera-symbol,
+.album-symbol {
+  position: relative;
+  width: 24px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.camera-symbol {
+  border: 3px solid currentColor;
+  border-radius: 7px;
+}
+
+.camera-symbol::before {
+  position: absolute;
+  top: -7px;
+  left: 5px;
+  width: 10px;
+  height: 5px;
+  border-radius: 4px 4px 0 0;
+  background: currentColor;
+  content: "";
+}
+
+.camera-symbol::after {
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  content: "";
+}
+
+.album-symbol {
+  border: 3px solid currentColor;
+  border-radius: 6px;
+  transform: rotate(-4deg);
+}
+
+.album-symbol::before {
+  position: absolute;
+  inset: 3px -6px -5px 5px;
+  border: 3px solid currentColor;
+  border-radius: 6px;
+  content: "";
+}
+
+.hidden-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.paper-collage,
+.day-art.paper-collage {
+  background:
+    linear-gradient(118deg, transparent 54%, rgba(154, 79, 79, 0.62) 55% 68%, transparent 69%),
+    linear-gradient(28deg, rgba(255, 255, 255, 0.85) 0 24%, transparent 25%),
+    radial-gradient(circle at 72% 25%, rgba(185, 139, 76, 0.8) 0 15%, transparent 16%),
+    linear-gradient(135deg, #385f56, #d6c29d);
+}
+
+.day-art.blue,
+.paper-collage.blue {
+  background:
+    linear-gradient(118deg, transparent 52%, rgba(255, 255, 255, 0.65) 53% 64%, transparent 65%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0 6px, transparent 6px 13px),
+    linear-gradient(135deg, var(--blue), #d8ded2);
+}
+
+.day-art.rose,
+.paper-collage.rose {
+  background:
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.76) 0 16%, transparent 17%),
+    linear-gradient(45deg, rgba(49, 95, 85, 0.45) 0 25%, transparent 26%),
+    linear-gradient(135deg, var(--pink), #f3d7b5);
+}
+
+.entry-card,
+.notebook-feature,
+.material-card,
+.link-panel {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 22px;
+  padding: 14px;
+  width: 100%;
+  border: 1px solid rgba(235, 237, 241, 0.9);
+  border-radius: 30px;
+  background: #ffffff;
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--soft-shadow);
+  font: inherit;
+}
+
+.entry-list-block {
+  margin-top: 22px;
+}
+
+.entry-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.entry-list-head p {
+  margin: 0;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.clear-filter {
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #f0f1f4;
+  color: #050505;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.clear-filter[hidden] {
+  display: none;
+}
+
+.entry-card-list {
+  display: grid;
+  gap: 12px;
+}
+
+.entry-card {
+  margin-top: 0;
+  appearance: none;
+}
+
+.entry-card h2 {
+  margin-top: 3px;
+}
+
+.scan-preview {
+  width: 92px;
+  height: 120px;
+  flex: 0 0 auto;
+  border: 7px solid #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 18px 34px rgba(36, 43, 53, 0.18);
+  transform: rotate(-3deg);
+}
+
+.entry-card p,
+.notebook-feature p {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.text-button,
+.primary-button {
+  border: 0;
+  border-radius: 999px;
+  font-weight: 950;
+}
+
+.text-button {
+  padding: 10px 12px;
+  background: #f0f1f4;
+  color: #050505;
+}
+
+.primary-button {
+  min-height: 46px;
+  padding: 0 18px;
+  background: #050505;
+  color: white;
+}
+
+.notebook-feature {
+  align-items: stretch;
+  margin-top: 0;
+}
+
+.notebook-cover {
+  display: grid;
+  width: 112px;
+  min-height: 150px;
+  place-items: end center;
+  padding: 18px 12px;
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
+    linear-gradient(135deg, #dff7ff, #ffffff 42%, #44c7f3);
+  color: #050505;
+  font-weight: 900;
+  box-shadow: var(--soft-shadow);
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.page-thumb {
+  position: relative;
+  aspect-ratio: 0.72;
+  border: 8px solid #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #f5f6f8;
+  box-shadow: var(--soft-shadow);
+}
+
+.page-thumb span {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.page-thumb.fresh {
+  background:
+    repeating-linear-gradient(0deg, rgba(106, 135, 168, 0.18) 0 1px, transparent 1px 18px),
+    #f7f8fa;
+}
+
+.page-thumb.blank {
+  background: #f6f7f9;
+}
+
+.link-panel {
+  display: block;
+}
+
+.link-panel p {
+  margin: 8px 0 14px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filter-row button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #f0f1f4;
+  white-space: nowrap;
+}
+
+.filter-row button.active {
+  background: var(--ink);
+  color: white;
+}
+
+.material-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.material-card {
+  margin-top: 0;
+}
+
+.material-image {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  border: 6px solid #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 12px 24px rgba(38, 45, 56, 0.12);
+}
+
+.material-image.leaf {
+  background:
+    radial-gradient(ellipse at 35% 35%, rgba(49, 95, 85, 0.85) 0 20%, transparent 21%),
+    radial-gradient(ellipse at 68% 60%, rgba(49, 95, 85, 0.55) 0 18%, transparent 19%),
+    #eadfce;
+}
+
+.material-image.grid {
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.45) 0 5px, transparent 5px 12px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.45) 0 5px, transparent 5px 12px),
+    var(--blue);
+}
+
+.material-image.ticket {
+  background:
+    radial-gradient(circle at left center, #fffaf2 0 9px, transparent 10px),
+    radial-gradient(circle at right center, #fffaf2 0 9px, transparent 10px),
+    linear-gradient(90deg, #d5a06f 0 34%, #f2d8a8 35% 66%, #9a4f4f 67%);
+}
+
+.entry-form {
+  display: grid;
+  gap: 16px;
+}
+
+.entry-form.scanned .upload-box {
+  min-height: 102px;
+  border-style: solid;
+}
+
+.profile-hero {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid rgba(235, 237, 241, 0.9);
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow: var(--soft-shadow);
+}
+
+.profile-avatar {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.profile-hero p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.profile-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.profile-stats {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-stat-card {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 22px;
+  border-radius: 30px;
+  background: #f5f6f8;
+  box-shadow: inset 0 0 0 1px rgba(235, 237, 241, 0.72);
+}
+
+.profile-stat-card span {
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.profile-stat-card strong {
+  font-size: 42px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.profile-stat-card small {
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.upload-box {
+  display: grid;
+  min-height: 158px;
+  place-items: center;
+  padding: 24px;
+  border: 0;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(68, 199, 243, 0.18), transparent 42%),
+    #f5f6f8;
+  box-shadow: inset 0 0 0 1px rgba(235, 237, 241, 0.7);
+  text-align: center;
+}
+
+.upload-box strong,
+.upload-box small {
+  display: block;
+}
+
+.upload-box input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.upload-icon {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 8px;
+  border: 3px solid #050505;
+  border-radius: 12px;
+}
+
+.upload-icon::before,
+.upload-icon::after {
+  position: absolute;
+  content: "";
+}
+
+.upload-icon::before {
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  height: 12px;
+  border-radius: 3px;
+  background: #050505;
+}
+
+.upload-icon::after {
+  top: 7px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.scan-result {
+  display: none;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(235, 237, 241, 0.9);
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow: var(--soft-shadow);
+}
+
+.scan-result.active,
+.entry-form.scanned .scan-result,
+.entry-form.scanning .scan-result {
+  display: flex;
+}
+
+.scan-result-image {
+  width: 76px;
+  height: 106px;
+  flex: 0 0 auto;
+  border: 6px solid #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 16px 30px rgba(38, 45, 56, 0.16);
+  transform: perspective(400px) rotateX(0deg);
+}
+
+.entry-form.scanning .scan-result-image {
+  filter: blur(1px) saturate(0.8);
+}
+
+.entry-form.scanned .scan-result-image {
+  filter: contrast(1.08) brightness(1.08) saturate(0.92);
+}
+
+.scan-result p,
+.scan-result h2,
+.scan-result span {
+  margin: 0;
+}
+
+.scan-result p {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.scan-result span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: #050505;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: 18px;
+  background: #f5f6f8;
+  color: var(--ink);
+  outline: none;
+}
+
+input,
+select {
+  height: 44px;
+  padding: 0 12px;
+}
+
+textarea {
+  min-height: 96px;
+  resize: vertical;
+  padding: 12px;
+  line-height: 1.5;
+}
+
+.story-viewer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  min-height: 100%;
+  padding: 18px;
+  background: #090909;
+  color: white;
+}
+
+.story-viewer.open {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+}
+
+.story-close {
+  position: absolute;
+  top: 22px;
+  right: 20px;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.story-progress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding-right: 46px;
+}
+
+.story-progress span {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.story-progress span:first-child {
+  background: white;
+}
+
+.story-stage {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  place-items: center;
+}
+
+.story-paper {
+  width: min(86%, 330px);
+  aspect-ratio: 0.72;
+  border: 10px solid #ffffff;
+  border-radius: 26px;
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.46);
+}
+
+.story-nav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  width: 36px;
+  height: 54px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  font-size: 34px;
+  transform: translateY(-50%);
+}
+
+.story-nav.prev {
+  left: 0;
+}
+
+.story-nav.next {
+  right: 0;
+}
+
+.story-caption {
+  padding: 14px 4px 2px;
+}
+
+.story-caption p,
+.story-caption span,
+.story-caption small {
+  margin: 0;
+}
+
+.story-caption p {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.story-caption h2 {
+  margin-top: 5px;
+  font-size: 24px;
+}
+
+.story-caption span,
+.story-caption small {
+  display: block;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.story-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0 10px;
+}
+
+.story-tags span {
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    display: block;
+    padding: 0;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .phone-frame {
+    min-height: 100vh;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px 8px;
+  }
+
+  .mobile-topbar p,
+  .mobile-topbar span {
+    margin: 0;
+  }
+
+  .mobile-topbar p {
+    font-weight: 950;
+  }
+
+  .mobile-topbar span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .round-button {
+    width: 48px;
+    height: 48px;
+    background: #ffffff;
+    box-shadow: var(--soft-shadow);
+  }
+
+  .round-button::before,
+  .round-button::after {
+    display: block;
+    width: 14px;
+    height: 2px;
+    grid-area: 1 / 1;
+    border-radius: 2px;
+    background: #fff;
+    content: "";
+  }
+
+  .round-button::after {
+    transform: rotate(90deg);
+  }
+
+  .profile-dot::before,
+  .profile-dot::after {
+    display: none;
+  }
+
+  .profile-dot {
+    background:
+      radial-gradient(circle at 50% 35%, #050505 0 5px, transparent 6px),
+      radial-gradient(ellipse at 50% 75%, #050505 0 10px, transparent 11px),
+      #ffffff;
+  }
+
+  .view {
+    min-height: auto;
+    padding: 18px 24px 116px;
+  }
+
+  .bottom-tabs {
+    position: fixed;
+    right: 28px;
+    bottom: 18px;
+    left: 28px;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid rgba(236, 238, 242, 0.72);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 22px 60px rgba(30, 36, 44, 0.16);
+    backdrop-filter: blur(18px);
+  }
+
+  .bottom-tab {
+    display: grid;
+    min-height: 56px;
+    place-items: center;
+    gap: 3px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #9b9ca1;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .bottom-tab.active {
+    background: #f0f1f4;
+    color: var(--ink);
+  }
+
+  .phone-frame.record-mode .bottom-tabs {
+    display: none;
+  }
+
+  .month-switcher strong {
+    display: none;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .story-viewer {
+    position: fixed;
+  }
+}
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">手</div>
+          <div>
+            <p>手帐记录簿</p>
+            <span>Journal Archive</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="主导航">
+          <button class="nav-item active" data-view="calendar" type="button">
+            <span class="icon calendar-icon"></span>
+            首页
+          </button>
+          <button class="nav-item" data-view="notebooks" type="button">
+            <span class="icon book-icon"></span>
+            我的本子
+          </button>
+          <button class="nav-item" data-view="materials" type="button">
+            <span class="icon tape-icon"></span>
+            我的素材
+          </button>
+          <button class="nav-item" data-view="profile" type="button">
+            <span class="icon user-icon"></span>
+            我的
+          </button>
+        </nav>
+
+        <section class="month-summary" aria-label="本月概览">
+          <p>八月记录</p>
+          <strong>18 天</strong>
+          <span>已归档 24 页，使用 46 件素材</span>
+        </section>
+      </aside>
+
+      <section class="phone-frame">
+        <nav class="bottom-tabs" aria-label="底部导航">
+          <button class="bottom-tab active" data-view="calendar" type="button">
+            <span class="icon calendar-icon"></span>
+            首页
+          </button>
+          <button class="bottom-tab" data-view="notebooks" type="button">
+            <span class="icon book-icon"></span>
+            我的本子
+          </button>
+          <button class="bottom-tab" data-view="materials" type="button">
+            <span class="icon tape-icon"></span>
+            我的素材
+          </button>
+          <button class="bottom-tab" data-view="profile" type="button">
+            <span class="icon user-icon"></span>
+            我的
+          </button>
+        </nav>
+
+        <section class="view active" id="calendar-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Home</span>
+              <h1>首页</h1>
+            </div>
+            <div class="month-switcher" aria-label="月份切换">
+              <button type="button" aria-label="上个月">‹</button>
+              <strong>2026.08</strong>
+              <button type="button" aria-label="下个月">›</button>
+            </div>
+          </div>
+
+          <div class="week-row" aria-hidden="true">
+            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+          </div>
+
+          <div class="calendar-grid" id="calendar-grid" aria-label="手帐日历"></div>
+
+          <button class="home-add-button" id="home-add-button" type="button" aria-label="新增手帐记录">
+            <span class="plus-icon"></span>
+          </button>
+
+          <section class="entry-list-block" aria-label="手帐卡片">
+            <div class="entry-list-head">
+              <p id="entry-list-kicker">本月手帐</p>
+              <button class="clear-filter" id="clear-filter" type="button">全部</button>
+            </div>
+            <div class="entry-card-list" id="entry-card-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="notebooks-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Notebook</span>
+              <h1>我的本子</h1>
+            </div>
+            <button class="text-button" type="button">新增本子</button>
+          </div>
+
+          <div class="notebook-feature">
+            <div class="notebook-cover">
+              <span>2026</span>
+            </div>
+            <div>
+              <p>正在使用</p>
+              <h2>复古拼贴本</h2>
+              <span>Midori A6 · 42 / 96 页</span>
+            </div>
+          </div>
+
+          <div class="page-grid" aria-label="本子页面">
+            <button class="page-thumb paper-collage" type="button"><span>40</span></button>
+            <button class="page-thumb fresh" type="button"><span>41</span></button>
+            <button class="page-thumb paper-collage blue" type="button"><span>42</span></button>
+            <button class="page-thumb blank" type="button"><span>43</span></button>
+            <button class="page-thumb paper-collage rose" type="button"><span>44</span></button>
+            <button class="page-thumb blank" type="button"><span>45</span></button>
+          </div>
+
+          <section class="link-panel">
+            <h2>扫描件归档</h2>
+            <p>上传作品时选择本子、页码和单页 / 跨页，之后可以从本子详情里按页翻看。</p>
+            <button class="primary-button" data-view="calendar" type="button">回首页新增手帐</button>
+          </section>
+        </section>
+
+        <section class="view" id="materials-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Materials</span>
+              <h1>我的素材</h1>
+            </div>
+            <button class="text-button" type="button">新增素材</button>
+          </div>
+
+          <div class="filter-row">
+            <button class="active" type="button">全部</button>
+            <button type="button">贴纸</button>
+            <button type="button">胶带</button>
+            <button type="button">推荐</button>
+          </div>
+
+          <div class="material-list">
+            <article class="material-card">
+              <div class="material-image leaf"></div>
+              <div>
+                <h2>植物旧票贴纸包</h2>
+                <p>OURS · 2026/08/03 · ¥38</p>
+                <span>推荐：纸质好，适合复古拼贴</span>
+              </div>
+            </article>
+            <article class="material-card">
+              <div class="material-image grid"></div>
+              <div>
+                <h2>蓝灰格纹胶带</h2>
+                <p>mt · 2026/07/18 · ¥22</p>
+                <span>一般：颜色好看，但边缘容易翘</span>
+              </div>
+            </article>
+            <article class="material-card">
+              <div class="material-image ticket"></div>
+              <div>
+                <h2>旅行票据便签</h2>
+                <p>TRAVELER'S · 2026/06/21 · ¥46</p>
+                <span>推荐：做日期标题很省心</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="profile-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Profile</span>
+              <h1>我的主页</h1>
+            </div>
+          </div>
+
+          <section class="profile-hero">
+            <div class="profile-avatar">W</div>
+            <div>
+              <h2>Yichun 的手帐档案</h2>
+              <p>最近归档到复古拼贴本第 42 页</p>
+            </div>
+          </section>
+
+          <section class="profile-stats" aria-label="我的数据">
+            <article class="profile-stat-card">
+              <span>归档手帐</span>
+              <strong>6</strong>
+              <small>张</small>
+            </article>
+            <article class="profile-stat-card">
+              <span>我的素材</span>
+              <strong>6</strong>
+              <small>件</small>
+            </article>
+            <article class="profile-stat-card">
+              <span>我的手帐本</span>
+              <strong>3</strong>
+              <small>本</small>
+            </article>
+          </section>
+        </section>
+
+        <section class="view record-view" id="record-view">
+          <header class="subpage-head">
+            <button class="back-button" id="record-back" type="button" aria-label="返回首页">‹</button>
+            <div>
+              <span class="eyebrow">New Page</span>
+              <h1>记录手帐</h1>
+            </div>
+          </header>
+
+          <form class="entry-form">
+            <section class="scan-result active" id="scan-result" aria-live="polite">
+              <div class="scan-result-image paper-collage blue"></div>
+              <div>
+                <p id="scan-status">扫描完成</p>
+                <h2>手帐页预览</h2>
+                <span>已自动检测页面边缘并完成校正</span>
+              </div>
+            </section>
+
+            <div class="form-grid">
+              <label>
+                日期
+                <input type="date" value="2026-08-15" />
+              </label>
+              <label>
+                标题
+                <input type="text" value="海边票根拼贴" />
+              </label>
+              <label>
+                选择本子
+                <select>
+                  <option>复古拼贴本</option>
+                  <option>旅行记录本</option>
+                  <option>日常拼贴本</option>
+                </select>
+              </label>
+              <label>
+                页码
+                <input type="number" value="42" />
+              </label>
+              <label>
+                页面类型
+                <select>
+                  <option>单页</option>
+                  <option>跨页</option>
+                  <option>正面</option>
+                  <option>背面</option>
+                </select>
+              </label>
+            </div>
+
+            <button class="primary-button" type="button">保存到本子和首页</button>
+          </form>
+        </section>
+
+        <section class="source-sheet" id="source-sheet" aria-hidden="true">
+          <button class="sheet-backdrop" id="sheet-backdrop" type="button" aria-label="关闭"></button>
+          <div class="sheet-panel">
+            <div class="sheet-handle"></div>
+            <h2>新增手帐页</h2>
+            <p>选择照片来源</p>
+            <button class="source-option" id="camera-option" type="button">
+              <span class="camera-symbol"></span>
+              打开相机
+            </button>
+            <button class="source-option" id="album-option" type="button">
+              <span class="album-symbol"></span>
+              我的相簿
+            </button>
+            <button class="source-cancel" id="source-cancel" type="button">取消</button>
+          </div>
+        </section>
+
+        <input id="scan-input" class="hidden-file-input" type="file" accept="image/*" />
+
+        <section class="story-viewer" id="story-viewer" aria-hidden="true">
+          <button class="story-close" id="story-close" type="button" aria-label="返回首页">‹</button>
+          <div class="story-progress" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="story-stage">
+            <div class="story-paper paper-collage" id="story-paper"></div>
+          </div>
+          <article class="story-caption">
+            <p id="story-date">2026 年 8 月 15 日</p>
+            <h2 id="story-title">海边票根拼贴</h2>
+            <span id="story-meta">复古拼贴本 · 第 42 页 · 单页扫描</span>
+            <div class="story-tags" id="story-tags"></div>
+            <small id="story-note">今天用了偏冷的蓝灰色，和旧票据很搭。</small>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script>
+const entries = {
+  1: { count: 1, style: "paper-collage", title: "夏日车票拼贴", notebook: "旅行记录本", page: 12, tags: ["车票", "复古", "蓝灰胶带"] },
+  3: { count: 2, style: "blue", title: "蓝色收据页", notebook: "复古拼贴本", page: 28, tags: ["收据", "格纹", "冷色"] },
+  5: { count: 1, style: "rose", title: "玫瑰便签页", notebook: "日常拼贴本", page: 9, tags: ["玫瑰", "便签", "印章"] },
+  7: { count: 1, style: "paper-collage", title: "旧书页练习", notebook: "复古拼贴本", page: 34, tags: ["旧书页", "植物", "棕色"] },
+  8: { count: 3, style: "blue", title: "三张小票拼贴", notebook: "旅行记录本", page: 18, tags: ["小票", "跨页", "蓝色"] },
+  10: { count: 1, style: "rose", title: "午后粉色页", notebook: "日常拼贴本", page: 16, tags: ["粉色", "花", "贴纸"] },
+  12: { count: 2, style: "paper-collage", title: "植物旧票贴纸", notebook: "复古拼贴本", page: 38, tags: ["OURS", "植物", "旧票"] },
+  14: { count: 1, style: "blue", title: "蓝灰格纹实验", notebook: "复古拼贴本", page: 40, tags: ["mt", "格纹", "试色"] },
+  15: { count: 1, style: "paper-collage today", title: "海边票根拼贴", notebook: "复古拼贴本", page: 42, tags: ["票根", "海边", "TN"] },
+  18: { count: 1, style: "rose", title: "红色印章页", notebook: "日常拼贴本", page: 21, tags: ["印章", "红色", "标题"] },
+  20: { count: 2, style: "paper-collage", title: "咖啡馆收纳页", notebook: "旅行记录本", page: 24, tags: ["咖啡", "票据", "便签"] },
+  22: { count: 1, style: "blue", title: "雨天蓝色拼贴", notebook: "复古拼贴本", page: 45, tags: ["雨天", "蓝色", "胶带"] },
+  25: { count: 1, style: "rose", title: "小花边角料", notebook: "日常拼贴本", page: 29, tags: ["边角料", "小花", "拼贴"] },
+  28: { count: 2, style: "paper-collage", title: "月末素材复盘", notebook: "复古拼贴本", page: 51, tags: ["复盘", "素材", "推荐"] },
+};
+
+const calendarGrid = document.querySelector("#calendar-grid");
+const entryCardList = document.querySelector("#entry-card-list");
+const entryListKicker = document.querySelector("#entry-list-kicker");
+const clearFilter = document.querySelector("#clear-filter");
+const firstWeekOffset = 5;
+const storyViewer = document.querySelector("#story-viewer");
+const storyPaper = document.querySelector("#story-paper");
+const storyDate = document.querySelector("#story-date");
+const storyTitle = document.querySelector("#story-title");
+const storyMeta = document.querySelector("#story-meta");
+const storyTags = document.querySelector("#story-tags");
+const storyNote = document.querySelector("#story-note");
+const homeAddButton = document.querySelector("#home-add-button");
+const sourceSheet = document.querySelector("#source-sheet");
+const sheetBackdrop = document.querySelector("#sheet-backdrop");
+const sourceCancel = document.querySelector("#source-cancel");
+const cameraOption = document.querySelector("#camera-option");
+const albumOption = document.querySelector("#album-option");
+const recordBack = document.querySelector("#record-back");
+const scanInput = document.querySelector("#scan-input");
+const scanForm = document.querySelector(".entry-form");
+const scanStatus = document.querySelector("#scan-status");
+const orderedDays = Object.keys(entries).map(Number).sort((a, b) => a - b);
+const journalCards = orderedDays.flatMap((day) => {
+  const data = entries[day];
+  return Array.from({ length: data.count }, (_, index) => ({
+    ...data,
+    day,
+    id: `${day}-${index + 1}`,
+    title: data.count > 1 ? `${data.title} ${index + 1}` : data.title,
+    page: data.page + index,
+  }));
+});
+let selectedDay = null;
+
+for (let i = 0; i < firstWeekOffset; i += 1) {
+  const spacer = document.createElement("div");
+  spacer.className = "day-cell empty";
+  spacer.setAttribute("aria-hidden", "true");
+  calendarGrid.append(spacer);
+}
+
+for (let day = 1; day <= 31; day += 1) {
+  const data = entries[day];
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = data ? `day-cell has-entry ${data.style.includes("today") ? "today" : ""}` : "day-cell";
+  button.setAttribute("aria-label", data ? `8月${day}日，${data.count}条手帐记录` : `8月${day}日，暂无记录`);
+  button.innerHTML = `<span>${day}</span>`;
+
+  if (data) {
+    const art = document.createElement("div");
+    art.className = `day-art ${data.style.replace("today", "").trim()}`;
+    button.append(art);
+
+    if (data.count > 1) {
+      const count = document.createElement("small");
+      count.textContent = data.count;
+      button.append(count);
+    }
+  }
+
+  button.addEventListener("click", () => {
+    if (data) {
+      selectedDay = day;
+      document.querySelectorAll(".day-cell").forEach((cell) => cell.classList.remove("selected"));
+      button.classList.add("selected");
+      renderEntryCards(day);
+    }
+  });
+
+  calendarGrid.append(button);
+}
+
+function renderEntryCards(day = null) {
+  const cards = day ? journalCards.filter((card) => card.day === day) : journalCards;
+  entryListKicker.textContent = day ? `8 月 ${day} 日` : "本月手帐";
+  clearFilter.hidden = !day;
+  entryCardList.innerHTML = cards
+    .map(
+      (card) => `
+        <button class="entry-card" type="button" data-card-id="${card.id}">
+          <div class="scan-preview ${card.style.replace("today", "").trim()}"></div>
+          <div>
+            <p>${card.notebook} · 第 ${card.page} 页</p>
+            <h2>${card.title}</h2>
+            <span>2026 年 8 月 ${card.day} 日 · 单页扫描</span>
+          </div>
+        </button>
+      `,
+    )
+    .join("");
+}
+
+function openStory(cardId) {
+  renderStory(cardId);
+  storyViewer.classList.add("open");
+  storyViewer.setAttribute("aria-hidden", "false");
+}
+
+function closeStory() {
+  storyViewer.classList.remove("open");
+  storyViewer.setAttribute("aria-hidden", "true");
+}
+
+function renderStory(cardId) {
+  const data = journalCards.find((card) => card.id === cardId);
+  if (!data) return;
+
+  storyPaper.className = `story-paper ${data.style.replace("today", "").trim()}`;
+  storyDate.textContent = `2026 年 8 月 ${data.day} 日`;
+  storyTitle.textContent = data.title;
+  storyMeta.textContent = `${data.notebook} · 第 ${data.page} 页 · 单页扫描`;
+  storyTags.innerHTML = data.tags.map((tag) => `<span>${tag}</span>`).join("");
+  storyNote.textContent = "已链接到本子页面，可以继续查看扫描件和页面归档信息。";
+}
+
+function showView(viewName) {
+  document.querySelectorAll(".view").forEach((view) => {
+    view.classList.toggle("active", view.id === `${viewName}-view`);
+  });
+
+  document.querySelector(".phone-frame").classList.toggle("record-mode", viewName === "record");
+
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.classList.toggle("active", item.dataset.view === viewName);
+  });
+
+  document.querySelectorAll(".bottom-tab").forEach((item) => {
+    item.classList.toggle("active", item.dataset.view === viewName);
+  });
+}
+
+document.querySelectorAll("[data-view]").forEach((control) => {
+  control.addEventListener("click", () => showView(control.dataset.view));
+});
+
+entryCardList.addEventListener("click", (event) => {
+  const card = event.target.closest(".entry-card");
+  if (!card) return;
+  openStory(card.dataset.cardId);
+});
+
+clearFilter.addEventListener("click", () => {
+  selectedDay = null;
+  document.querySelectorAll(".day-cell").forEach((cell) => cell.classList.remove("selected"));
+  renderEntryCards();
+});
+
+document.querySelector("#story-close").addEventListener("click", closeStory);
+renderEntryCards();
+
+homeAddButton.addEventListener("click", () => {
+  sourceSheet.classList.add("open");
+  sourceSheet.setAttribute("aria-hidden", "false");
+});
+
+function closeSourceSheet() {
+  sourceSheet.classList.remove("open");
+  sourceSheet.setAttribute("aria-hidden", "true");
+}
+
+function pickImage(source) {
+  if (source === "camera") {
+    scanInput.setAttribute("capture", "environment");
+  } else {
+    scanInput.removeAttribute("capture");
+  }
+
+  scanInput.click();
+}
+
+sheetBackdrop.addEventListener("click", closeSourceSheet);
+sourceCancel.addEventListener("click", closeSourceSheet);
+cameraOption.addEventListener("click", () => pickImage("camera"));
+albumOption.addEventListener("click", () => pickImage("album"));
+recordBack.addEventListener("click", () => showView("calendar"));
+
+scanInput.addEventListener("change", () => {
+  if (!scanInput.files.length) return;
+
+  closeSourceSheet();
+  showView("record");
+  scanForm.classList.remove("scanned");
+  scanForm.classList.add("scanning");
+  scanStatus.textContent = "正在检测页面边缘...";
+
+  window.setTimeout(() => {
+    scanStatus.textContent = "正在校正透视和提亮...";
+  }, 700);
+
+  window.setTimeout(() => {
+    scanForm.classList.remove("scanning");
+    scanForm.classList.add("scanned");
+    scanStatus.textContent = "扫描完成";
+  }, 1400);
+});
+
+    </script>
+  </body>
+</html>

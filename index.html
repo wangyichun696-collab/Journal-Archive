@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>手帐记录簿</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">手</div>
+          <div>
+            <p>手帐记录簿</p>
+            <span>Journal Archive</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="主导航">
+          <button class="nav-item active" data-view="calendar" type="button">
+            <span class="icon calendar-icon"></span>
+            首页
+          </button>
+          <button class="nav-item" data-view="notebooks" type="button">
+            <span class="icon book-icon"></span>
+            我的本子
+          </button>
+          <button class="nav-item" data-view="materials" type="button">
+            <span class="icon tape-icon"></span>
+            我的素材
+          </button>
+          <button class="nav-item" data-view="profile" type="button">
+            <span class="icon user-icon"></span>
+            我的
+          </button>
+        </nav>
+
+        <section class="month-summary" aria-label="本月概览">
+          <p>八月记录</p>
+          <strong>18 天</strong>
+          <span>已归档 24 页，使用 46 件素材</span>
+        </section>
+      </aside>
+
+      <section class="phone-frame">
+        <nav class="bottom-tabs" aria-label="底部导航">
+          <button class="bottom-tab active" data-view="calendar" type="button">
+            <span class="icon calendar-icon"></span>
+            首页
+          </button>
+          <button class="bottom-tab" data-view="notebooks" type="button">
+            <span class="icon book-icon"></span>
+            我的本子
+          </button>
+          <button class="bottom-tab" data-view="materials" type="button">
+            <span class="icon tape-icon"></span>
+            我的素材
+          </button>
+          <button class="bottom-tab" data-view="profile" type="button">
+            <span class="icon user-icon"></span>
+            我的
+          </button>
+        </nav>
+
+        <section class="view active" id="calendar-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Home</span>
+              <h1>首页</h1>
+            </div>
+            <div class="month-switcher" aria-label="月份切换">
+              <button type="button" aria-label="上个月">‹</button>
+              <strong>2026.08</strong>
+              <button type="button" aria-label="下个月">›</button>
+            </div>
+          </div>
+
+          <div class="week-row" aria-hidden="true">
+            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+          </div>
+
+          <div class="calendar-grid" id="calendar-grid" aria-label="手帐日历"></div>
+
+          <button class="home-add-button" id="home-add-button" type="button" aria-label="新增手帐记录">
+            <span class="plus-icon"></span>
+          </button>
+
+          <section class="entry-list-block" aria-label="手帐卡片">
+            <div class="entry-list-head">
+              <p id="entry-list-kicker">本月手帐</p>
+              <button class="clear-filter" id="clear-filter" type="button">全部</button>
+            </div>
+            <div class="entry-card-list" id="entry-card-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="notebooks-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Notebook</span>
+              <h1>我的本子</h1>
+            </div>
+            <button class="text-button" type="button">新增本子</button>
+          </div>
+
+          <div class="notebook-feature">
+            <div class="notebook-cover">
+              <span>2026</span>
+            </div>
+            <div>
+              <p>正在使用</p>
+              <h2>复古拼贴本</h2>
+              <span>Midori A6 · 42 / 96 页</span>
+            </div>
+          </div>
+
+          <div class="page-grid" aria-label="本子页面">
+            <button class="page-thumb paper-collage" type="button"><span>40</span></button>
+            <button class="page-thumb fresh" type="button"><span>41</span></button>
+            <button class="page-thumb paper-collage blue" type="button"><span>42</span></button>
+            <button class="page-thumb blank" type="button"><span>43</span></button>
+            <button class="page-thumb paper-collage rose" type="button"><span>44</span></button>
+            <button class="page-thumb blank" type="button"><span>45</span></button>
+          </div>
+
+          <section class="link-panel">
+            <h2>扫描件归档</h2>
+            <p>上传作品时选择本子、页码和单页 / 跨页，之后可以从本子详情里按页翻看。</p>
+            <button class="primary-button" data-view="calendar" type="button">回首页新增手帐</button>
+          </section>
+        </section>
+
+        <section class="view" id="materials-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Materials</span>
+              <h1>我的素材</h1>
+            </div>
+            <button class="text-button" type="button">新增素材</button>
+          </div>
+
+          <div class="filter-row">
+            <button class="active" type="button">全部</button>
+            <button type="button">贴纸</button>
+            <button type="button">胶带</button>
+            <button type="button">推荐</button>
+          </div>
+
+          <div class="material-list">
+            <article class="material-card">
+              <div class="material-image leaf"></div>
+              <div>
+                <h2>植物旧票贴纸包</h2>
+                <p>OURS · 2026/08/03 · ¥38</p>
+                <span>推荐：纸质好，适合复古拼贴</span>
+              </div>
+            </article>
+            <article class="material-card">
+              <div class="material-image grid"></div>
+              <div>
+                <h2>蓝灰格纹胶带</h2>
+                <p>mt · 2026/07/18 · ¥22</p>
+                <span>一般：颜色好看，但边缘容易翘</span>
+              </div>
+            </article>
+            <article class="material-card">
+              <div class="material-image ticket"></div>
+              <div>
+                <h2>旅行票据便签</h2>
+                <p>TRAVELER'S · 2026/06/21 · ¥46</p>
+                <span>推荐：做日期标题很省心</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="profile-view">
+          <div class="view-head">
+            <div>
+              <span class="eyebrow">Profile</span>
+              <h1>我的主页</h1>
+            </div>
+          </div>
+
+          <section class="profile-hero">
+            <div class="profile-avatar">W</div>
+            <div>
+              <h2>Yichun 的手帐档案</h2>
+              <p>最近归档到复古拼贴本第 42 页</p>
+            </div>
+          </section>
+
+          <section class="profile-stats" aria-label="我的数据">
+            <article class="profile-stat-card">
+              <span>归档手帐</span>
+              <strong>6</strong>
+              <small>张</small>
+            </article>
+            <article class="profile-stat-card">
+              <span>我的素材</span>
+              <strong>6</strong>
+              <small>件</small>
+            </article>
+            <article class="profile-stat-card">
+              <span>我的手帐本</span>
+              <strong>3</strong>
+              <small>本</small>
+            </article>
+          </section>
+        </section>
+
+        <section class="view record-view" id="record-view">
+          <header class="subpage-head">
+            <button class="back-button" id="record-back" type="button" aria-label="返回首页">‹</button>
+            <div>
+              <span class="eyebrow">New Page</span>
+              <h1>记录手帐</h1>
+            </div>
+          </header>
+
+          <form class="entry-form">
+            <section class="scan-result active" id="scan-result" aria-live="polite">
+              <div class="scan-result-image paper-collage blue"></div>
+              <div>
+                <p id="scan-status">扫描完成</p>
+                <h2>手帐页预览</h2>
+                <span>已自动检测页面边缘并完成校正</span>
+              </div>
+            </section>
+
+            <div class="form-grid">
+              <label>
+                日期
+                <input type="date" value="2026-08-15" />
+              </label>
+              <label>
+                标题
+                <input type="text" value="海边票根拼贴" />
+              </label>
+              <label>
+                选择本子
+                <select>
+                  <option>复古拼贴本</option>
+                  <option>旅行记录本</option>
+                  <option>日常拼贴本</option>
+                </select>
+              </label>
+              <label>
+                页码
+                <input type="number" value="42" />
+              </label>
+              <label>
+                页面类型
+                <select>
+                  <option>单页</option>
+                  <option>跨页</option>
+                  <option>正面</option>
+                  <option>背面</option>
+                </select>
+              </label>
+            </div>
+
+            <button class="primary-button" type="button">保存到本子和首页</button>
+          </form>
+        </section>
+
+        <section class="source-sheet" id="source-sheet" aria-hidden="true">
+          <button class="sheet-backdrop" id="sheet-backdrop" type="button" aria-label="关闭"></button>
+          <div class="sheet-panel">
+            <div class="sheet-handle"></div>
+            <h2>新增手帐页</h2>
+            <p>选择照片来源</p>
+            <button class="source-option" id="camera-option" type="button">
+              <span class="camera-symbol"></span>
+              打开相机
+            </button>
+            <button class="source-option" id="album-option" type="button">
+              <span class="album-symbol"></span>
+              我的相簿
+            </button>
+            <button class="source-cancel" id="source-cancel" type="button">取消</button>
+          </div>
+        </section>
+
+        <input id="scan-input" class="hidden-file-input" type="file" accept="image/*" />
+
+        <section class="story-viewer" id="story-viewer" aria-hidden="true">
+          <button class="story-close" id="story-close" type="button" aria-label="返回首页">‹</button>
+          <div class="story-progress" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="story-stage">
+            <div class="story-paper paper-collage" id="story-paper"></div>
+          </div>
+          <article class="story-caption">
+            <p id="story-date">2026 年 8 月 15 日</p>
+            <h2 id="story-title">海边票根拼贴</h2>
+            <span id="story-meta">复古拼贴本 · 第 42 页 · 单页扫描</span>
+            <div class="story-tags" id="story-tags"></div>
+            <small id="story-note">今天用了偏冷的蓝灰色，和旧票据很搭。</small>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
