@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>手帐记录簿</title>
     <style>
-
 :root {
   color-scheme: light;
-  --number-font: "Poppins", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --app-font: "PingFang SC", "PingFang TC", "PingFang HK", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --number-font: var(--app-font);
   --ink: #050505;
   --muted: #96979c;
   --paper: #ffffff;
@@ -27,6 +27,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -34,19 +38,17 @@ body {
     radial-gradient(circle at 54% 5%, rgba(64, 199, 243, 0.18), transparent 34%),
     linear-gradient(180deg, #f7fcff 0%, #ffffff 30%, #ffffff 100%);
   color: var(--ink);
-  font-family:
-    ui-sans-serif,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: var(--app-font);
 }
 
 button,
 input,
 select,
 textarea {
+  -webkit-appearance: none;
+  appearance: none;
   font: inherit;
+  color: inherit;
 }
 
 button {
@@ -101,7 +103,7 @@ button {
 }
 
 .brand p {
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .brand span,
@@ -118,7 +120,7 @@ button {
 
 .nav-list {
   display: grid;
-  gap: 10px;
+  gap: 5px;
 }
 
 .nav-item {
@@ -138,7 +140,7 @@ button {
 .nav-item.active {
   background: #f0f1f4;
   color: var(--ink);
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .icon {
@@ -146,6 +148,33 @@ button {
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
+}
+
+.svg-tab-icon {
+  display: grid;
+  place-items: center;
+}
+
+.svg-tab-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tape-tab-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.my-tab-icon {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.my-tab-icon svg > path {
+  display: none;
 }
 
 .calendar-icon {
@@ -279,7 +308,7 @@ button {
   margin-bottom: 4px;
   color: var(--blue);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -291,15 +320,15 @@ h2 {
 }
 
 h1 {
-  font-size: 52px;
+  font-size: 32px;
   line-height: 1.08;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 h2 {
   font-size: 20px;
   line-height: 1.2;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .month-switcher strong,
@@ -307,7 +336,8 @@ h2 {
 .day-cell small,
 .calendar-strip strong,
 .month-summary strong,
-.notebook-cover span,
+.notebook-cover .cover-mark,
+.notebook-cover .scan-count,
 .page-thumb span,
 .material-card p,
 .profile-stat-card strong,
@@ -317,6 +347,7 @@ input[type="number"],
 #story-date,
 #story-meta {
   font-family: var(--number-font);
+  font-weight: 540;
 }
 
 .month-switcher {
@@ -342,6 +373,10 @@ input[type="number"],
   font-size: 20px;
 }
 
+.month-switcher button:disabled {
+  color: #c8c9ce;
+}
+
 .search-pill {
   display: flex;
   align-items: center;
@@ -361,7 +396,7 @@ input[type="number"],
   background: transparent;
   color: var(--ink);
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .search-pill input::placeholder {
@@ -444,7 +479,7 @@ input[type="number"],
   min-width: 0;
   place-items: center;
   border: 0;
-  border-radius: 18px;
+  border-radius: 50%;
   background: #f5f6f8;
   color: #9a9ba0;
   font-weight: 700;
@@ -454,9 +489,7 @@ input[type="number"],
   overflow: hidden;
   border-color: transparent;
   color: #fff;
-  box-shadow:
-    inset 0 -34px 28px rgba(0, 0, 0, 0.2),
-    0 10px 22px rgba(30, 36, 44, 0.12);
+  box-shadow: inset 0 -34px 28px rgba(0, 0, 0, 0.2);
 }
 
 .day-cell.today {
@@ -475,7 +508,7 @@ input[type="number"],
   left: 7px;
   z-index: 2;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 540;
 }
 
 .day-cell small {
@@ -490,7 +523,7 @@ input[type="number"],
   background: rgba(255, 255, 255, 0.88);
   color: var(--ink);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 540;
   line-height: 18px;
   text-align: center;
 }
@@ -559,140 +592,10 @@ input[type="number"],
   line-height: 1;
 }
 
-.record-view h1 {
-  font-size: 42px;
-}
-
-.source-sheet {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
-  display: none;
-}
-
-.source-sheet.open {
-  display: block;
-}
-
-.sheet-backdrop {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: rgba(0, 0, 0, 0.16);
-  backdrop-filter: blur(5px);
-}
-
-.sheet-panel {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  left: 14px;
-  padding: 12px 14px 14px;
-  border-radius: 34px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 28px 80px rgba(30, 36, 44, 0.24);
-  backdrop-filter: blur(18px);
-}
-
-.sheet-handle {
-  width: 48px;
-  height: 5px;
-  margin: 0 auto 18px;
-  border-radius: 999px;
-  background: #d2d4d9;
-}
-
-.sheet-panel h2,
-.sheet-panel p {
-  margin: 0;
-  text-align: center;
-}
-
-.sheet-panel h2 {
-  font-size: 24px;
-}
-
-.sheet-panel p {
-  margin-top: 5px;
-  margin-bottom: 16px;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.source-option,
-.source-cancel {
-  width: 100%;
-  min-height: 58px;
-  border: 0;
-  border-radius: 22px;
-  font-weight: 950;
-}
-
-.source-option {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  background: #f0f1f4;
-  color: #050505;
-  font-size: 18px;
-}
-
-.source-cancel {
-  margin-top: 4px;
-  background: #050505;
-  color: #ffffff;
-}
-
-.camera-symbol,
-.album-symbol {
-  position: relative;
-  width: 24px;
-  height: 20px;
-  flex: 0 0 auto;
-}
-
-.camera-symbol {
-  border: 3px solid currentColor;
-  border-radius: 7px;
-}
-
-.camera-symbol::before {
-  position: absolute;
-  top: -7px;
-  left: 5px;
-  width: 10px;
-  height: 5px;
-  border-radius: 4px 4px 0 0;
-  background: currentColor;
-  content: "";
-}
-
-.camera-symbol::after {
-  position: absolute;
-  top: 4px;
-  left: 7px;
-  width: 6px;
-  height: 6px;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  content: "";
-}
-
-.album-symbol {
-  border: 3px solid currentColor;
-  border-radius: 6px;
-  transform: rotate(-4deg);
-}
-
-.album-symbol::before {
-  position: absolute;
-  inset: 3px -6px -5px 5px;
-  border: 3px solid currentColor;
-  border-radius: 6px;
-  content: "";
+#calendar-title {
+  font-family: var(--app-font);
+  font-size: 32px;
+  font-weight: 700;
 }
 
 .hidden-file-input {
@@ -763,7 +666,7 @@ input[type="number"],
   margin: 0;
   color: var(--blue);
   font-size: 13px;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .clear-filter {
@@ -774,7 +677,7 @@ input[type="number"],
   background: #f0f1f4;
   color: #050505;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .clear-filter[hidden] {
@@ -784,15 +687,83 @@ input[type="number"],
 .entry-card-list {
   display: grid;
   gap: 12px;
+  min-height: 270px;
+}
+
+.empty-note {
+  margin: 24px 0 0;
+  color: #c1c3c8;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.empty-state {
+  align-self: center;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: auto;
+  padding: 4px 12px;
+  color: #c1c3c8;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.empty-state img {
+  display: block;
+  width: 138px;
+  max-width: 72%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(75, 197, 242, 0.12));
+}
+
+.entry-card-list .empty-state {
+  margin: auto;
+}
+
+.notebook-shelf .empty-state,
+.material-list .empty-state {
+  grid-column: 1 / -1;
+}
+
+.notebook-shelf .empty-state img {
+  width: 150px;
+}
+
+.material-list .empty-state img {
+  width: 132px;
+}
+
+.empty-state p {
+  margin: 0;
 }
 
 .entry-card {
   margin-top: 0;
+  align-items: center;
+  gap: 10px;
+  min-height: 128px;
+  padding: 0 12px;
+  overflow: visible;
   appearance: none;
 }
 
+.entry-card > div:not(.scan-preview) {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-height: 96px;
+  padding: 10px 0;
+}
+
 .entry-card h2 {
-  margin-top: 3px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.22;
 }
 
 .scan-preview {
@@ -801,22 +772,39 @@ input[type="number"],
   flex: 0 0 auto;
   border: 7px solid #ffffff;
   border-radius: 22px;
+  margin-top: -8px;
+  margin-bottom: 8px;
   box-shadow: 0 18px 34px rgba(36, 43, 53, 0.18);
   transform: rotate(-3deg);
 }
 
-.entry-card p,
+.entry-card p {
+  margin: 0;
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 540;
+  line-height: 1.25;
+}
+
+.entry-card span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 540;
+  line-height: 1.25;
+}
+
 .notebook-feature p {
   color: var(--blue);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .text-button,
 .primary-button {
   border: 0;
   border-radius: 999px;
-  font-weight: 950;
+  font-weight: 700;
 }
 
 .text-button {
@@ -832,24 +820,70 @@ input[type="number"],
   color: white;
 }
 
+.primary-button:disabled {
+  cursor: not-allowed;
+  background: #d9dde4;
+  color: rgba(5, 5, 5, 0.5);
+}
+
 .notebook-feature {
   align-items: stretch;
   margin-top: 0;
 }
 
 .notebook-cover {
+  position: relative;
   display: grid;
   width: 112px;
   min-height: 150px;
   place-items: end center;
   padding: 18px 12px;
+  border: 8px solid #ffffff;
   border-radius: 24px;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
     linear-gradient(135deg, #dff7ff, #ffffff 42%, #44c7f3);
   color: #050505;
-  font-weight: 900;
+  font-weight: 700;
+  overflow: hidden;
   box-shadow: var(--soft-shadow);
+}
+
+.notebook-cover.travel {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
+    linear-gradient(135deg, #f4d7e6, #ffffff 42%, #ffd447);
+}
+
+.notebook-cover.daily {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
+    linear-gradient(135deg, #f5f6f8, #ffffff 42%, #d8ded2);
+}
+
+.notebook-cover.default-cover-paper {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
+    linear-gradient(118deg, transparent 54%, rgba(154, 79, 79, 0.62) 55% 68%, transparent 69%),
+    linear-gradient(28deg, rgba(255, 255, 255, 0.85) 0 24%, transparent 25%),
+    radial-gradient(circle at 72% 25%, rgba(185, 139, 76, 0.8) 0 15%, transparent 16%),
+    linear-gradient(135deg, #385f56, #d6c29d);
+}
+
+.notebook-cover.default-cover-blue {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
+    linear-gradient(118deg, transparent 52%, rgba(255, 255, 255, 0.65) 53% 64%, transparent 65%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0 6px, transparent 6px 13px),
+    linear-gradient(135deg, var(--blue), #d8ded2);
+}
+
+.notebook-cover.default-cover-rose {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 7px, transparent 8px),
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.76) 0 16%, transparent 17%),
+    linear-gradient(45deg, rgba(49, 95, 85, 0.45) 0 25%, transparent 26%),
+    linear-gradient(135deg, var(--pink), #f3d7b5);
 }
 
 .page-grid {
@@ -878,7 +912,7 @@ input[type="number"],
   background: rgba(255, 255, 255, 0.9);
   color: var(--ink);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .page-thumb.fresh {
@@ -899,6 +933,132 @@ input[type="number"],
   margin: 8px 0 14px;
 }
 
+.detail-preview > div:last-child {
+  min-width: 0;
+}
+
+.notebook-shelf {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
+  gap: 12px;
+  min-height: calc(100dvh - 300px);
+}
+
+.notebook-shelf.has-visible-notebooks {
+  align-content: start;
+  min-height: 0;
+}
+
+.notebook-tabs {
+  margin-bottom: 18px;
+}
+
+.shelf-notebook-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  grid-template-rows: 160px auto;
+  gap: 5px;
+  min-width: 0;
+  text-align: center;
+}
+
+.shelf-notebook-card .notebook-cover {
+  align-self: end;
+  width: 97px;
+  min-height: 160px;
+  padding: 14px 8px;
+  border: 0;
+  border-radius: 22px;
+}
+
+.shelf-notebook-card .notebook-cover.cutout-cover {
+  width: 97px;
+  min-height: 160px;
+  place-items: end center;
+}
+
+.shelf-notebook-card .notebook-cover.cutout-cover .cutout-image {
+  width: 100%;
+  height: 100%;
+  filter:
+    drop-shadow(2px 0 0 #ffffff)
+    drop-shadow(-2px 0 0 #ffffff)
+    drop-shadow(0 2px 0 #ffffff)
+    drop-shadow(0 -2px 0 #ffffff)
+    drop-shadow(0 10px 16px rgba(38, 45, 56, 0.08));
+}
+
+.notebook-cover .cover-mark {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  color: rgba(5, 5, 5, 0.34);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.shelf-notebook-card h2 {
+  margin: 0;
+}
+
+.shelf-notebook-card h2 {
+  margin-top: -14px;
+  display: -webkit-box;
+  width: 100%;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  min-height: 32px;
+  text-align: center;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+}
+
+.status-pill {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  display: inline-grid;
+  min-height: 22px;
+  place-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #dff7ff;
+  color: #050505;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-pill.archived {
+  background: #f0f1f4;
+  color: var(--muted);
+}
+
+.scan-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(5, 5, 5, 0.08);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #050505;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
 .filter-row {
   display: flex;
   gap: 8px;
@@ -912,22 +1072,119 @@ input[type="number"],
   border: 0;
   border-radius: 999px;
   background: #f0f1f4;
+  color: var(--muted);
   white-space: nowrap;
 }
 
 .filter-row button.active {
   background: var(--ink);
-  color: white;
+  color: #ffffff;
 }
 
 .material-list {
-  display: grid;
+  display: none;
   gap: 12px;
+  min-height: 360px;
   margin-top: 18px;
 }
 
+.material-list.active {
+  display: grid;
+}
+
+.material-list:has(.material-card) {
+  min-height: 0;
+}
+
 .material-card {
+  position: relative;
+  cursor: pointer;
   margin-top: 0;
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.material-card.delete-mode {
+  animation: material-wiggle 0.18s ease-in-out infinite alternate;
+}
+
+.material-delete-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 4;
+  display: none;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #eef1f5;
+  box-shadow: 0 8px 18px rgba(38, 45, 56, 0.14);
+}
+
+.material-card.delete-mode .material-delete-button {
+  display: grid;
+}
+
+.material-delete-button::before,
+.material-delete-button::after {
+  grid-area: 1 / 1;
+  width: 11px;
+  height: 2px;
+  border-radius: 999px;
+  background: #050505;
+  content: "";
+}
+
+.material-delete-button::before {
+  transform: rotate(45deg);
+}
+
+.material-delete-button::after {
+  transform: rotate(-45deg);
+}
+
+@keyframes material-wiggle {
+  from {
+    transform: rotate(-0.7deg);
+  }
+
+  to {
+    transform: rotate(0.7deg);
+  }
+}
+
+.material-card:active {
+  transform: scale(0.99);
+}
+
+.material-card h2 {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.material-card .material-image {
+  position: relative;
+  width: 72px;
+  min-width: 72px;
+  max-width: 72px;
+  height: 72px;
+  min-height: 72px;
+  max-height: 72px;
+  aspect-ratio: 1 / 1;
+}
+
+.material-card .material-image.cutout-asset .cutout-image {
+  display: block;
+  width: 90%;
+  min-width: 0;
+  max-width: 90%;
+  height: 90%;
+  min-height: 0;
+  max-height: 90%;
+  object-fit: contain;
 }
 
 .material-image {
@@ -960,6 +1217,18 @@ input[type="number"],
     linear-gradient(90deg, #d5a06f 0 34%, #f2d8a8 35% 66%, #9a4f4f 67%);
 }
 
+.material-image.notebook-material {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 9px, transparent 10px),
+    linear-gradient(135deg, #dff7ff, #ffffff 46%, #44c7f3);
+}
+
+.material-image.notebook-material.blue {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 9px, transparent 10px),
+    linear-gradient(135deg, #315f55, #d7e2dd 48%, #8edbf7);
+}
+
 .entry-form {
   display: grid;
   gap: 16px;
@@ -974,12 +1243,8 @@ input[type="number"],
   display: flex;
   gap: 14px;
   align-items: center;
-  margin-bottom: 16px;
-  padding: 14px;
-  border: 1px solid rgba(235, 237, 241, 0.9);
-  border-radius: 30px;
-  background: #ffffff;
-  box-shadow: var(--soft-shadow);
+  margin-bottom: 20px;
+  padding: 0;
 }
 
 .profile-avatar {
@@ -992,7 +1257,7 @@ input[type="number"],
   background: var(--blue);
   color: white;
   font-size: 22px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .profile-hero p {
@@ -1009,40 +1274,195 @@ input[type="number"],
   margin-bottom: 16px;
 }
 
-.profile-stats {
+.profile-stats,
+.profile-card-grid {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
 .profile-stat-card {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 8px;
-  align-items: baseline;
-  padding: 22px;
-  border-radius: 30px;
+  position: relative;
+  min-height: 170px;
+  overflow: hidden;
+  padding: 18px 16px 91px;
+  border-radius: 24px;
   background: #f5f6f8;
   box-shadow: inset 0 0 0 1px rgba(235, 237, 241, 0.72);
 }
 
+.profile-stat-card span,
+.profile-stat-card strong,
+.profile-stat-card small {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
 .profile-stat-card span {
-  font-size: 18px;
-  font-weight: 950;
+  color: #050505;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .profile-stat-card strong {
-  font-size: 42px;
-  font-weight: 950;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 30px;
+  font-weight: 600;
   line-height: 1;
 }
 
+.profile-stat-card strong .metric-number {
+  display: inline;
+  font-family: "Poppins", var(--app-font);
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  color: inherit;
+}
+
+.profile-stat-card strong .metric-unit {
+  display: inline;
+  font-family: var(--app-font);
+  font-size: 0.5em;
+  font-weight: 440;
+  line-height: inherit;
+  color: inherit;
+}
+
 .profile-stat-card small {
+  margin-top: 5px;
   color: var(--muted);
-  font-size: 16px;
-  font-weight: 900;
+  font-size: 13px;
+  font-weight: 540;
+}
+
+.profile-card-stage {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -20px;
+  height: 93px;
+  border-radius: 16px;
+}
+
+.profile-card-stage::before,
+.profile-card-stage::after {
+  position: absolute;
+  left: 50%;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.profile-card-stage::before {
+  top: 24px;
+  z-index: 0;
+  width: 136px;
+  height: 49px;
+  background: url("data:image/svg+xml,%3Csvg width='136' height='49' viewBox='0 0 136 49' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 12.7C1.6 6.2 7 1 13.5 1H122C128.5 1 133.9 6.2 134 12.7L136 49H0L1.5 12.7Z' fill='url(%23g)' fill-opacity='.8'/%3E%3Cpath d='M1.5 12.7C1.6 6.2 7 1 13.5 1H122C128.5 1 133.9 6.2 134 12.7L136 49H0L1.5 12.7Z' stroke='%23F7FCFF' stroke-opacity='.28'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='68' y1='1' x2='68' y2='49' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%234BC5F2'/%3E%3Cstop offset='1' stop-color='%23E2E5EA'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+.profile-card-stage::after {
+  bottom: 20px;
+  z-index: 2;
+  width: 142px;
+  height: 27px;
+  background: url("data:image/svg+xml,%3Csvg width='142' height='27' viewBox='0 0 142 27' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M58.7 1C58 .4 57.1 0 56.1 0H12C4.9 0-.7 6.2.1 13.3L1.6 27H140.5L141 25.1C141.9 17.9 136.3 11.6 129.1 11.6H72.2C71.2 11.6 70.2 11.3 69.5 10.6L58.7 1Z' fill='url(%23g)' fill-opacity='.8'/%3E%3Cpath d='M12 .5H56.1C56.9.5 57.8.8 58.4 1.4L69.2 11C70 11.7 71.1 12.1 72.2 12.1H129.1C136 12.1 141.3 18.2 140.5 25L140.2 27H2.1L.6 13.2C-.2 6.4 5.2.5 12 .5Z' stroke='%23F7FCFF' stroke-opacity='.22'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='70.6' y1='0' x2='70.6' y2='27' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%234BC5F2'/%3E%3Cstop offset='1' stop-color='%234BC5F2' stop-opacity='.8'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+.profile-card-stage i {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.profile-preview-item:nth-child(1) {
+  left: 10px;
+  bottom: 40px;
+  width: 50px;
+  height: 62px;
+  transform: rotate(-8deg);
+}
+
+.profile-preview-item:nth-child(2) {
+  left: 50%;
+  bottom: 48px;
+  width: 56px;
+  height: 70px;
+  transform: translateX(-50%) rotate(4deg);
+}
+
+.profile-preview-item:nth-child(3) {
+  right: 10px;
+  bottom: 40px;
+  width: 48px;
+  height: 60px;
+  transform: rotate(8deg);
+}
+
+.profile-preview-item img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter:
+    drop-shadow(2px 0 0 #ffffff)
+    drop-shadow(-2px 0 0 #ffffff)
+    drop-shadow(0 2px 0 #ffffff)
+    drop-shadow(0 -2px 0 #ffffff)
+    drop-shadow(0 10px 16px rgba(30, 36, 44, 0.14));
+}
+
+.profile-paper-preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 4px #ffffff,
+    0 10px 16px rgba(30, 36, 44, 0.14);
+}
+
+.profile-spend-card {
+  display: flex;
+  min-height: 170px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  background:
+    radial-gradient(ellipse 120px 96px at 92% 88%, rgba(255, 255, 255, 0.72), transparent 62%),
+    radial-gradient(ellipse 150px 118px at 78% 96%, rgba(134, 223, 249, 0.5), transparent 70%),
+    linear-gradient(145deg, #dff7ff 0%, #bdeefa 54%, #9fe4f7 100%);
+  color: #050505;
+}
+
+.profile-spend-card span,
+.profile-spend-card small {
+  color: rgba(5, 5, 5, 0.58);
+}
+
+.profile-spend-card strong {
+  margin: 18px 0 0;
+  color: #050505;
+  font-weight: 540;
+  line-height: 1;
+}
+
+.profile-spend-card strong .currency-symbol {
+  margin-right: 1px;
 }
 
 .upload-box {
+  position: relative;
   display: grid;
   min-height: 158px;
   place-items: center;
@@ -1056,6 +1476,17 @@ input[type="number"],
   text-align: center;
 }
 
+button.upload-box {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.upload-box:active {
+  transform: scale(0.99);
+}
+
 .upload-box strong,
 .upload-box small {
   display: block;
@@ -1065,6 +1496,382 @@ input[type="number"],
   position: absolute;
   opacity: 0;
   pointer-events: none;
+}
+
+.compact-upload {
+  min-height: 132px;
+  margin-bottom: 16px;
+}
+
+.detail-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 6px;
+  border-radius: 999px;
+  background: #f0f1f4;
+}
+
+.detail-switch button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.detail-switch button.active {
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: 0 8px 22px rgba(30, 36, 44, 0.08);
+}
+
+.detail-preview {
+  margin-bottom: 16px;
+}
+
+.notebook-detail-panel {
+  display: none;
+}
+
+.notebook-detail-panel.active {
+  display: grid;
+  gap: 16px;
+}
+
+#notebook-detail-view,
+#notebook-edit-view {
+  position: relative;
+  padding-bottom: 132px;
+}
+
+.notebook-bottom-action {
+  position: fixed;
+  right: auto;
+  bottom: 54px;
+  left: 50%;
+  z-index: 12;
+  width: min(342px, calc(100vw - 48px));
+  min-height: 52px;
+  transform: translateX(-50%);
+}
+
+#notebook-detail-view::after,
+#notebook-edit-view::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 11;
+  height: 116px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), #ffffff 42%);
+  content: "";
+}
+
+.notebook-edit-form {
+  margin-top: 18px;
+}
+
+.notebook-edit-upload-trigger {
+  grid-template-columns: 72px 1fr;
+  text-align: left;
+}
+
+.notebook-new-cover-preview {
+  display: none;
+  width: 72px;
+  height: 96px;
+}
+
+.notebook-new-cover-preview.active {
+  display: grid;
+}
+
+.notebook-edit-cover-preview {
+  display: grid;
+  width: 64px;
+  justify-items: stretch;
+}
+
+.notebook-edit-cover-preview .notebook-cover {
+  width: 64px;
+  min-height: 82px;
+  border-radius: 16px;
+}
+
+.notebook-edit-cover-preview .status-pill,
+.notebook-edit-cover-preview .scan-count {
+  display: none;
+}
+
+.notebook-cover.cutout-cover {
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cutout-cover .cover-mark,
+.cutout-cover .scan-count {
+  display: none;
+}
+
+.cutout-image {
+  width: 90%;
+  height: 90%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter:
+    drop-shadow(2px 0 0 #ffffff)
+    drop-shadow(-2px 0 0 #ffffff)
+    drop-shadow(0 2px 0 #ffffff)
+    drop-shadow(0 -2px 0 #ffffff)
+    drop-shadow(0 10px 16px rgba(38, 45, 56, 0.16));
+  transform: translateY(-2px) rotate(var(--asset-tilt, 0deg));
+  user-select: none;
+  pointer-events: none;
+}
+
+.notebook-new-cover-preview .notebook-cover {
+  width: 72px;
+  min-height: 96px;
+  border-radius: 18px;
+}
+
+.library-notebook-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.selectable-notebook {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.selectable-notebook span {
+  display: -webkit-box;
+  width: 100%;
+  min-height: 30px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-align: center;
+  word-break: break-word;
+}
+
+.selectable-notebook .notebook-cover {
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.selectable-notebook.selected .notebook-cover {
+  box-shadow:
+    0 0 0 3px rgba(75, 197, 242, 0.42),
+    var(--soft-shadow);
+  transform: translateY(-2px);
+}
+
+.centered-subpage-head {
+  position: relative;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.centered-subpage-head .back-button {
+  position: absolute;
+  left: 0;
+}
+
+.centered-subpage-head .notebook-action-trigger {
+  position: absolute;
+  right: 0;
+}
+
+.centered-subpage-head h1 {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.notebook-info-view {
+  padding-bottom: 90px;
+}
+
+.notebook-info-card {
+  display: grid;
+  justify-items: center;
+  padding-top: 18px;
+  text-align: center;
+}
+
+.notebook-info-cover {
+  display: grid;
+  width: 142px;
+  justify-items: stretch;
+}
+
+.notebook-info-cover .notebook-cover {
+  width: 100%;
+  min-height: 188px;
+  border-radius: 28px;
+}
+
+.notebook-info-card h2 {
+  margin: 18px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.notebook-info-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 540;
+}
+
+.notebook-archive-section {
+  margin-top: 28px;
+}
+
+.notebook-action-modal {
+  position: absolute;
+  top: 74px;
+  right: 24px;
+  z-index: 36;
+  display: none;
+  width: 172px;
+}
+
+.notebook-action-modal.open {
+  display: block;
+}
+
+.notebook-action-sheet {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(235, 237, 241, 0.9);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 16px 34px rgba(30, 36, 44, 0.12);
+}
+
+.notebook-action-sheet button {
+  min-height: 38px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 540;
+  text-align: left;
+}
+
+.notebook-action-sheet button:active {
+  background: #f5f6f8;
+}
+
+.confirm-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: rgba(5, 5, 5, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+.confirm-modal.open {
+  display: grid;
+}
+
+.confirm-sheet {
+  width: min(100%, 286px);
+  padding: 20px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 60px rgba(30, 36, 44, 0.18);
+  text-align: center;
+}
+
+.confirm-sheet h2 {
+  font-size: 20px;
+}
+
+.confirm-sheet p {
+  margin: 10px 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.secondary-button,
+.danger-button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 16px;
+  font: inherit;
+  font-weight: 700;
+}
+
+.secondary-button {
+  background: #f0f1f4;
+  color: #050505;
+}
+
+.danger-button {
+  background: #050505;
+  color: #ffffff;
+}
+
+.notebook-cover.compact {
+  width: 76px;
+  min-height: 96px;
+  border-radius: 20px;
+}
+
+.checkbox-label {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  border-radius: 18px;
+  background: #f5f6f8;
+}
+
+.checkbox-label input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--blue);
 }
 
 .upload-icon {
@@ -1123,6 +1930,8 @@ input[type="number"],
   flex: 0 0 auto;
   border: 6px solid #ffffff;
   border-radius: 20px;
+  background-position: center;
+  background-size: cover;
   box-shadow: 0 16px 30px rgba(38, 45, 56, 0.16);
   transform: perspective(400px) rotateX(0deg);
 }
@@ -1144,7 +1953,7 @@ input[type="number"],
 .scan-result p {
   color: var(--blue);
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .scan-result span {
@@ -1155,18 +1964,124 @@ input[type="number"],
   line-height: 1.5;
 }
 
+.document-scanner {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  display: none;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: 14px;
+  min-height: 100%;
+  padding: 18px 18px 24px;
+  background: #090909;
+  color: #ffffff;
+}
+
+.document-scanner.open {
+  display: grid;
+}
+
+.scanner-head {
+  display: grid;
+  grid-template-columns: 64px 1fr 64px;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+}
+
+.scanner-head h1 {
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.scanner-text-button {
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.scanner-text-button:last-child {
+  text-align: right;
+}
+
+.scanner-stage {
+  position: relative;
+  align-self: center;
+  width: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #151515;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
+  touch-action: none;
+}
+
+.scanner-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.92;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.scanner-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scanner-overlay polygon {
+  fill: rgba(75, 197, 242, 0.13);
+  stroke: var(--blue);
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.scanner-handle {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  transform: translate(-50%, -50%);
+  touch-action: none;
+}
+
+.scanner-helper {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.scanner-finish {
+  width: 100%;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-label {
+label,
+.form-field {
   display: grid;
   gap: 7px;
   color: #050505;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 input,
@@ -1187,11 +2102,348 @@ select {
   padding: 0 12px;
 }
 
+input[type="date"] {
+  padding-right: 12px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  opacity: 0;
+}
+
 textarea {
   min-height: 96px;
   resize: vertical;
   padding: 12px;
   line-height: 1.5;
+}
+
+.date-control,
+.select-control {
+  position: relative;
+  display: block;
+}
+
+.date-control::before,
+.date-control::after,
+.select-control > button::before,
+.select-control > button::after {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  content: "";
+}
+
+.date-control::before,
+.date-control::after {
+  display: none;
+}
+
+.select-control {
+  z-index: 4;
+}
+
+.select-control > button {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  padding: 0 42px 0 12px;
+  border: 0;
+  border-radius: 18px;
+  background: #f5f6f8;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 540;
+  text-align: left;
+}
+
+.select-control > button::before,
+.select-control > button::after {
+  top: 50%;
+  width: 9px;
+  height: 2px;
+  border-radius: 999px;
+  background: #050505;
+  transition: transform 0.18s ease;
+}
+
+.select-control > button::before {
+  right: 21px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.select-control > button::after {
+  right: 15px;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.select-control.open > button::before {
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.select-control.open > button::after {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.select-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: none;
+  padding: 6px;
+  border: 1px solid rgba(235, 237, 241, 0.9);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 22px 42px rgba(30, 36, 44, 0.14);
+  backdrop-filter: blur(16px);
+}
+
+.select-control.open .select-menu {
+  display: grid;
+  gap: 4px;
+}
+
+.select-menu button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 540;
+  text-align: left;
+}
+
+.select-menu button.active {
+  background: #f0f8fd;
+  color: #050505;
+  font-weight: 700;
+}
+
+.material-upload-field {
+  position: relative;
+  display: grid;
+  width: max-content;
+  gap: 16px;
+  margin: 8px auto 16px;
+  justify-items: center;
+}
+
+.material-upload-field.has-image {
+  margin-bottom: 16px;
+}
+
+.material-upload-field small {
+  max-width: 156px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.material-upload-trigger {
+  position: relative;
+  display: grid;
+  width: 112px;
+  height: 112px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: #f5f6f8;
+  color: inherit;
+  cursor: pointer;
+}
+
+.material-upload-trigger.has-image,
+.material-upload-trigger:has(.cutout-asset) {
+  width: auto;
+  min-width: 112px;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.material-upload-trigger.is-processing,
+.upload-box.is-processing {
+  pointer-events: none;
+}
+
+.material-upload-trigger.is-processing::after,
+.upload-box.is-processing::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(75, 197, 242, 0.2);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  content: "";
+  animation: upload-spin 0.8s linear infinite;
+}
+
+.material-upload-trigger.is-processing::before,
+.upload-box.is-processing::before {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: rgba(245, 246, 248, 0.78);
+  content: "";
+}
+
+@keyframes upload-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.material-upload-trigger.is-processing .material-detail-preview {
+  opacity: 0;
+}
+
+.material-upload-trigger:active {
+  transform: scale(0.98);
+}
+
+.material-detail-preview,
+.material-detail-preview .material-image {
+  width: 100%;
+  height: 100%;
+}
+
+.material-upload-trigger.has-image .material-detail-preview,
+.material-upload-trigger:has(.cutout-asset) .material-detail-preview {
+  display: grid;
+  width: auto;
+  height: auto;
+  place-items: center;
+}
+
+.material-detail-preview .material-image {
+  border-width: 0;
+  border-radius: 22px;
+  box-shadow: none;
+}
+
+.material-detail-preview .material-image.cutout-asset {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.material-detail-preview .material-image.cutout-asset .cutout-image {
+  width: 90%;
+  max-width: 90%;
+  height: 90%;
+  max-height: 90%;
+}
+
+.material-upload-trigger.has-image .material-detail-preview .material-image.cutout-asset,
+.material-upload-trigger:has(.cutout-asset) .material-detail-preview .material-image.cutout-asset {
+  width: auto;
+  height: auto;
+  max-width: 89px;
+  max-height: 110px;
+  overflow: visible;
+}
+
+.material-upload-trigger.has-image .material-detail-preview .material-image.cutout-asset .cutout-image,
+.material-upload-trigger:has(.cutout-asset) .material-detail-preview .material-image.cutout-asset .cutout-image {
+  display: block;
+  width: auto;
+  max-width: 89px;
+  height: auto;
+  max-height: 110px;
+  object-fit: contain;
+}
+
+.material-image.cutout-asset {
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.material-image.cutout-asset .cutout-image {
+  filter:
+    drop-shadow(2px 0 0 #ffffff)
+    drop-shadow(-2px 0 0 #ffffff)
+    drop-shadow(0 2px 0 #ffffff)
+    drop-shadow(0 -2px 0 #ffffff)
+    drop-shadow(0 10px 16px rgba(38, 45, 56, 0.14));
+}
+
+.material-image-empty {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: #f5f6f8;
+  box-shadow: inset 0 0 0 1px rgba(229, 232, 238, 0.9);
+}
+
+.material-image-empty::before,
+.material-image-empty::after {
+  grid-area: 1 / 1;
+  width: 30px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--blue);
+  content: "";
+}
+
+.material-image-empty::after {
+  transform: rotate(90deg);
+}
+
+.material-image-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #eef1f5;
+  box-shadow: 0 8px 18px rgba(38, 45, 56, 0.12);
+  cursor: pointer;
+}
+
+.material-image-remove::before,
+.material-image-remove::after {
+  grid-area: 1 / 1;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: #050505;
+  content: "";
+}
+
+.material-image-remove::before {
+  transform: rotate(45deg);
+}
+
+.material-image-remove::after {
+  transform: rotate(-45deg);
+}
+
+.material-image-remove.hidden {
+  display: none;
 }
 
 .story-viewer {
@@ -1200,15 +2452,15 @@ textarea {
   z-index: 40;
   display: none;
   min-height: 100%;
-  padding: 18px;
+  padding: 18px 18px 30px;
   background: #090909;
   color: white;
 }
 
 .story-viewer.open {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 14px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 16px;
 }
 
 .story-close {
@@ -1222,25 +2474,26 @@ textarea {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.16);
   color: white;
-  font-size: 26px;
-  line-height: 1;
 }
 
-.story-progress {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  padding-right: 46px;
+.story-close::before,
+.story-close::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  content: "";
 }
 
-.story-progress span {
-  height: 3px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.28);
+.story-close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
-.story-progress span:first-child {
-  background: white;
+.story-close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .story-stage {
@@ -1251,77 +2504,44 @@ textarea {
 }
 
 .story-paper {
-  width: min(86%, 330px);
+  width: 100%;
   aspect-ratio: 0.72;
   border: 10px solid #ffffff;
   border-radius: 26px;
   box-shadow: 0 26px 80px rgba(0, 0, 0, 0.46);
 }
 
-.story-nav {
-  position: absolute;
-  top: 50%;
-  display: grid;
-  width: 36px;
-  height: 54px;
-  place-items: center;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  color: white;
-  font-size: 34px;
-  transform: translateY(-50%);
-}
-
-.story-nav.prev {
-  left: 0;
-}
-
-.story-nav.next {
-  right: 0;
-}
-
 .story-caption {
-  padding: 14px 4px 2px;
+  display: grid;
+  gap: 2px;
+  padding: 0 4px;
 }
 
 .story-caption p,
-.story-caption span,
-.story-caption small {
+.story-caption span {
   margin: 0;
 }
 
 .story-caption p {
   color: rgba(255, 255, 255, 0.62);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 540;
+  line-height: 1.25;
 }
 
 .story-caption h2 {
-  margin-top: 5px;
-  font-size: 24px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.22;
 }
 
-.story-caption span,
-.story-caption small {
+.story-caption span {
   display: block;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.story-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin: 12px 0 10px;
-}
-
-.story-tags span {
-  padding: 5px 9px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 540;
+  line-height: 1.25;
 }
 
 @media (max-width: 760px) {
@@ -1354,7 +2574,7 @@ textarea {
   }
 
   .mobile-topbar p {
-    font-weight: 950;
+    font-weight: 700;
   }
 
   .mobile-topbar span {
@@ -1428,7 +2648,7 @@ textarea {
     background: transparent;
     color: #9b9ca1;
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .bottom-tab.active {
@@ -1438,6 +2658,14 @@ textarea {
 
   .phone-frame.record-mode .bottom-tabs {
     display: none;
+  }
+
+  .notebook-bottom-action {
+    right: 24px;
+    bottom: max(54px, calc(env(safe-area-inset-bottom) + 22px));
+    left: 24px;
+    width: auto;
+    transform: none;
   }
 
   .month-switcher strong {
@@ -1452,6 +2680,7 @@ textarea {
     position: fixed;
   }
 }
+
     </style>
   </head>
   <body>
@@ -1468,26 +2697,38 @@ textarea {
         <nav class="nav-list" aria-label="主导航">
           <button class="nav-item active" data-view="calendar" type="button">
             <span class="icon calendar-icon"></span>
-            首页
+            记录
           </button>
           <button class="nav-item" data-view="notebooks" type="button">
             <span class="icon book-icon"></span>
-            我的本子
+            本子
           </button>
           <button class="nav-item" data-view="materials" type="button">
-            <span class="icon tape-icon"></span>
-            我的素材
+            <span class="icon svg-tab-icon tape-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 22 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.7954 7.38596C15.1118 8.55782 12.37 9.32176 9.27349 9.32176C4.15338 9.32176 0.00241089 7.23515 0.00241089 4.6615C0.00241089 2.08661 4.15338 0 9.27349 0C14.3936 0 18.5446 2.08661 18.5446 4.66026C18.5446 4.69735 18.5446 4.73196 18.5421 4.76781H18.547V8.97935H16.7954V7.38472V7.38596ZM16.7929 4.66026C16.7929 4.38831 16.5309 3.67753 15.0426 2.92966C13.6569 2.23247 11.6185 1.75162 9.27349 1.75162C6.92729 1.75162 4.89012 2.23371 3.50441 2.92966C2.01609 3.67753 1.75279 4.38831 1.75279 4.66026C1.75279 4.93221 2.01609 5.64299 3.50441 6.39086C4.89012 7.08805 6.92729 7.57014 9.27349 7.57014C11.6197 7.57014 13.6569 7.08805 15.0426 6.3921C16.5309 5.64299 16.7929 4.93221 16.7929 4.6615V4.66026Z" fill="currentColor"/>
+                <path d="M10.8286 4.55934L10.8212 4.5717C10.8249 4.56305 10.8274 4.55934 10.8286 4.55934ZM10.7359 4.6607C10.7023 4.68815 10.6672 4.71374 10.6308 4.73735C10.3613 4.91659 9.88665 5.08347 9.27352 5.08347C8.6604 5.08347 8.18572 4.91659 7.91377 4.73735C7.8782 4.71367 7.84395 4.68809 7.81117 4.6607C7.84435 4.63328 7.87902 4.60769 7.915 4.58406C8.18448 4.40606 8.6604 4.23794 9.27352 4.23794C9.88665 4.23794 10.3613 4.40606 10.6308 4.58406C10.6672 4.60767 10.7023 4.63325 10.7359 4.6607ZM7.71846 4.7633C7.71846 4.7633 7.71846 4.75836 7.72464 4.74971L7.71846 4.76207V4.7633ZM10.8212 4.74971L10.8286 4.76207C10.8286 4.7633 10.8249 4.75836 10.8212 4.74971ZM9.27352 6.83508C11.0882 6.83508 12.5604 5.86224 12.5604 4.6607C12.5604 3.46041 11.0894 2.48633 9.27229 2.48633C7.45763 2.48633 5.98662 3.46041 5.98662 4.66194C5.98662 5.861 7.45763 6.83508 9.27352 6.83508Z" fill="currentColor"/>
+                <path d="M3.50447 6.39255C2.23989 5.75594 1.8604 5.14652 1.77387 4.81152H0V12.9021C0 14.5758 1.32638 15.8589 2.94202 16.6698C4.57249 17.4894 6.75305 17.9802 9.12027 17.9999H20.9403V16.5438L19.803 14.6005L21.1183 12.5943L19.8327 10.7116L20.9403 9.09105V7.56565H9.12027V7.56936C6.83835 7.54958 4.85928 7.0749 3.50447 6.39255ZM9.12027 9.31603H18.6645L17.7127 10.7104L19.0106 12.6128L17.7424 14.5474L18.7387 16.2483H9.27231C7.06085 16.2483 5.10156 15.7959 3.72821 15.1049C2.30294 14.3892 1.75038 13.5597 1.75038 12.9033V7.38517C3.40681 8.5385 6.08677 9.29502 9.12027 9.31974V9.31479V9.31603Z" fill="currentColor"/>
+              </svg>
+            </span>
+            素材
           </button>
           <button class="nav-item" data-view="profile" type="button">
-            <span class="icon user-icon"></span>
+            <span class="icon svg-tab-icon my-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 0V2H14V0V-2H4V0ZM18 4H16V14H18H20V4H18ZM14 18V16H4V18V20H14V18ZM0 14H2V4H0H-2V14H0ZM4 18V16C2.89543 16 2 15.1046 2 14H0H-2C-2 17.3137 0.686291 20 4 20V18ZM18 14H16C16 15.1046 15.1046 16 14 16V18V20C17.3137 20 20 17.3137 20 14H18ZM14 0V2C15.1046 2 16 2.89543 16 4H18H20C20 0.686292 17.3137 -2 14 -2V0ZM4 0V-2C0.686292 -2 -2 0.686291 -2 4H0H2C2 2.89543 2.89543 2 4 2V0Z" fill="currentColor"/>
+                <rect x="7.00317" y="5.8916" width="4" height="2" transform="rotate(90 7.00317 5.8916)" fill="currentColor"/>
+                <rect x="13.0032" y="5.8916" width="4" height="2" transform="rotate(90 13.0032 5.8916)" fill="currentColor"/>
+              </svg>
+            </span>
             我的
           </button>
         </nav>
 
         <section class="month-summary" aria-label="本月概览">
           <p>八月记录</p>
-          <strong>18 天</strong>
-          <span>已归档 24 页，使用 46 件素材</span>
+          <strong>0 天</strong>
+          <span>已归档 0 页，使用 0 件素材</span>
         </section>
       </aside>
 
@@ -1495,18 +2736,30 @@ textarea {
         <nav class="bottom-tabs" aria-label="底部导航">
           <button class="bottom-tab active" data-view="calendar" type="button">
             <span class="icon calendar-icon"></span>
-            首页
+            记录
           </button>
           <button class="bottom-tab" data-view="notebooks" type="button">
             <span class="icon book-icon"></span>
-            我的本子
+            本子
           </button>
           <button class="bottom-tab" data-view="materials" type="button">
-            <span class="icon tape-icon"></span>
-            我的素材
+            <span class="icon svg-tab-icon tape-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 22 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.7954 7.38596C15.1118 8.55782 12.37 9.32176 9.27349 9.32176C4.15338 9.32176 0.00241089 7.23515 0.00241089 4.6615C0.00241089 2.08661 4.15338 0 9.27349 0C14.3936 0 18.5446 2.08661 18.5446 4.66026C18.5446 4.69735 18.5446 4.73196 18.5421 4.76781H18.547V8.97935H16.7954V7.38472V7.38596ZM16.7929 4.66026C16.7929 4.38831 16.5309 3.67753 15.0426 2.92966C13.6569 2.23247 11.6185 1.75162 9.27349 1.75162C6.92729 1.75162 4.89012 2.23371 3.50441 2.92966C2.01609 3.67753 1.75279 4.38831 1.75279 4.66026C1.75279 4.93221 2.01609 5.64299 3.50441 6.39086C4.89012 7.08805 6.92729 7.57014 9.27349 7.57014C11.6197 7.57014 13.6569 7.08805 15.0426 6.3921C16.5309 5.64299 16.7929 4.93221 16.7929 4.6615V4.66026Z" fill="currentColor"/>
+                <path d="M10.8286 4.55934L10.8212 4.5717C10.8249 4.56305 10.8274 4.55934 10.8286 4.55934ZM10.7359 4.6607C10.7023 4.68815 10.6672 4.71374 10.6308 4.73735C10.3613 4.91659 9.88665 5.08347 9.27352 5.08347C8.6604 5.08347 8.18572 4.91659 7.91377 4.73735C7.8782 4.71367 7.84395 4.68809 7.81117 4.6607C7.84435 4.63328 7.87902 4.60769 7.915 4.58406C8.18448 4.40606 8.6604 4.23794 9.27352 4.23794C9.88665 4.23794 10.3613 4.40606 10.6308 4.58406C10.6672 4.60767 10.7023 4.63325 10.7359 4.6607ZM7.71846 4.7633C7.71846 4.7633 7.71846 4.75836 7.72464 4.74971L7.71846 4.76207V4.7633ZM10.8212 4.74971L10.8286 4.76207C10.8286 4.7633 10.8249 4.75836 10.8212 4.74971ZM9.27352 6.83508C11.0882 6.83508 12.5604 5.86224 12.5604 4.6607C12.5604 3.46041 11.0894 2.48633 9.27229 2.48633C7.45763 2.48633 5.98662 3.46041 5.98662 4.66194C5.98662 5.861 7.45763 6.83508 9.27352 6.83508Z" fill="currentColor"/>
+                <path d="M3.50447 6.39255C2.23989 5.75594 1.8604 5.14652 1.77387 4.81152H0V12.9021C0 14.5758 1.32638 15.8589 2.94202 16.6698C4.57249 17.4894 6.75305 17.9802 9.12027 17.9999H20.9403V16.5438L19.803 14.6005L21.1183 12.5943L19.8327 10.7116L20.9403 9.09105V7.56565H9.12027V7.56936C6.83835 7.54958 4.85928 7.0749 3.50447 6.39255ZM9.12027 9.31603H18.6645L17.7127 10.7104L19.0106 12.6128L17.7424 14.5474L18.7387 16.2483H9.27231C7.06085 16.2483 5.10156 15.7959 3.72821 15.1049C2.30294 14.3892 1.75038 13.5597 1.75038 12.9033V7.38517C3.40681 8.5385 6.08677 9.29502 9.12027 9.31974V9.31479V9.31603Z" fill="currentColor"/>
+              </svg>
+            </span>
+            素材
           </button>
           <button class="bottom-tab" data-view="profile" type="button">
-            <span class="icon user-icon"></span>
+            <span class="icon svg-tab-icon my-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 0V2H14V0V-2H4V0ZM18 4H16V14H18H20V4H18ZM14 18V16H4V18V20H14V18ZM0 14H2V4H0H-2V14H0ZM4 18V16C2.89543 16 2 15.1046 2 14H0H-2C-2 17.3137 0.686291 20 4 20V18ZM18 14H16C16 15.1046 15.1046 16 14 16V18V20C17.3137 20 20 17.3137 20 14H18ZM14 0V2C15.1046 2 16 2.89543 16 4H18H20C20 0.686292 17.3137 -2 14 -2V0ZM4 0V-2C0.686292 -2 -2 0.686291 -2 4H0H2C2 2.89543 2.89543 2 4 2V0Z" fill="currentColor"/>
+                <rect x="7.00317" y="5.8916" width="4" height="2" transform="rotate(90 7.00317 5.8916)" fill="currentColor"/>
+                <rect x="13.0032" y="5.8916" width="4" height="2" transform="rotate(90 13.0032 5.8916)" fill="currentColor"/>
+              </svg>
+            </span>
             我的
           </button>
         </nav>
@@ -1514,13 +2767,13 @@ textarea {
         <section class="view active" id="calendar-view">
           <div class="view-head">
             <div>
-              <span class="eyebrow">Home</span>
-              <h1>首页</h1>
+              <span class="eyebrow" id="calendar-eyebrow">August 2026</span>
+              <h1 id="calendar-title">8月</h1>
             </div>
             <div class="month-switcher" aria-label="月份切换">
-              <button type="button" aria-label="上个月">‹</button>
-              <strong>2026.08</strong>
-              <button type="button" aria-label="下个月">›</button>
+              <button type="button" id="prev-month" aria-label="上个月">‹</button>
+              <strong id="month-code">2026.08</strong>
+              <button type="button" id="next-month" aria-label="下个月">›</button>
             </div>
           </div>
 
@@ -1549,34 +2802,126 @@ textarea {
               <span class="eyebrow">Notebook</span>
               <h1>我的本子</h1>
             </div>
-            <button class="text-button" type="button">新增本子</button>
+            <button class="text-button" data-view="notebook-detail" type="button">新增本子</button>
           </div>
 
-          <div class="notebook-feature">
-            <div class="notebook-cover">
-              <span>2026</span>
+          <div class="filter-row notebook-tabs" aria-label="本子状态">
+            <button class="active" type="button" data-notebook-filter="all">全部</button>
+            <button type="button" data-notebook-filter="writing">正在写</button>
+            <button type="button" data-notebook-filter="archived">已归档</button>
+          </div>
+
+          <div class="notebook-shelf" aria-label="我的本子列表">
+            <div class="empty-state" data-empty-state="notebooks">
+              <img src="./assets/empty-states/notebook-box.png" alt="" />
+              <p>这里还没有本子哦</p>
             </div>
-            <div>
-              <p>正在使用</p>
-              <h2>复古拼贴本</h2>
-              <span>Midori A6 · 42 / 96 页</span>
-            </div>
           </div>
+        </section>
 
-          <div class="page-grid" aria-label="本子页面">
-            <button class="page-thumb paper-collage" type="button"><span>40</span></button>
-            <button class="page-thumb fresh" type="button"><span>41</span></button>
-            <button class="page-thumb paper-collage blue" type="button"><span>42</span></button>
-            <button class="page-thumb blank" type="button"><span>43</span></button>
-            <button class="page-thumb paper-collage rose" type="button"><span>44</span></button>
-            <button class="page-thumb blank" type="button"><span>45</span></button>
-          </div>
+        <section class="view record-view notebook-info-view" id="notebook-info-view">
+          <header class="subpage-head centered-subpage-head">
+            <button class="back-button" data-view="notebooks" type="button" aria-label="返回我的本子">‹</button>
+            <h1>本子详情</h1>
+            <button class="text-button notebook-action-trigger" id="notebook-action-trigger" type="button">编辑</button>
+          </header>
 
-          <section class="link-panel">
-            <h2>扫描件归档</h2>
-            <p>上传作品时选择本子、页码和单页 / 跨页，之后可以从本子详情里按页翻看。</p>
-            <button class="primary-button" data-view="calendar" type="button">回首页新增手帐</button>
+          <article class="notebook-info-card">
+            <div class="notebook-info-cover" id="notebook-info-cover"></div>
+            <h2 id="notebook-info-name">未命名本子</h2>
+            <p id="notebook-info-meta" hidden></p>
+          </article>
+
+          <section class="notebook-archive-section">
+            <p class="entry-list-kicker">归档手帐</p>
+            <div class="entry-card-list" id="notebook-info-entry-list"></div>
           </section>
+        </section>
+
+        <section class="view record-view" id="notebook-edit-view">
+          <header class="subpage-head centered-subpage-head">
+            <button class="back-button" data-view="notebook-info" type="button" aria-label="返回本子详情">‹</button>
+            <h1>编辑本子</h1>
+          </header>
+
+          <form class="entry-form notebook-edit-form" id="notebook-edit-form">
+            <button class="upload-box compact-upload notebook-edit-upload-trigger" type="button" aria-label="修改本子封面">
+              <div class="notebook-edit-cover-preview" id="notebook-edit-cover-preview"></div>
+              <div>
+                <strong>修改本子封面</strong>
+                <small id="notebook-edit-upload-hint">拍摄封面或从相簿选择</small>
+              </div>
+            </button>
+            <div class="form-grid">
+              <label>
+                本子名称
+                <input id="notebook-edit-name" type="text" required />
+              </label>
+              <label>
+                品牌
+                <input id="notebook-edit-brand" type="text" />
+              </label>
+              <label>
+                规格
+                <input id="notebook-edit-spec" type="text" />
+              </label>
+              <label>
+                本子状态
+                <select id="notebook-edit-status">
+                  <option value="writing">正在写</option>
+                  <option value="archived">已归档</option>
+                </select>
+              </label>
+            </div>
+
+            <button class="primary-button notebook-bottom-action" type="submit">保存修改</button>
+          </form>
+        </section>
+
+        <section class="view record-view" id="notebook-detail-view">
+          <header class="subpage-head centered-subpage-head">
+            <button class="back-button" data-view="notebooks" type="button" aria-label="返回我的本子">‹</button>
+            <h1>新增本子</h1>
+          </header>
+
+          <div class="detail-switch" aria-label="新增本子方式">
+            <button class="active" type="button" data-notebook-mode="library">从素材库添加</button>
+            <button type="button" data-notebook-mode="new">新建本子</button>
+          </div>
+
+          <section class="notebook-detail-panel active" data-notebook-panel="library">
+            <div class="library-notebook-picker" aria-label="从素材库选择本子">
+              <p class="empty-note">素材库里还没有本子素材。</p>
+            </div>
+            <button class="primary-button notebook-bottom-action" type="button" disabled>添加本子</button>
+          </section>
+
+          <form class="entry-form notebook-detail-panel" id="notebook-new-form" data-notebook-panel="new">
+            <button class="upload-box compact-upload notebook-upload-trigger" type="button" aria-label="上传本子封面">
+              <div class="notebook-new-cover-preview" id="notebook-new-cover-preview"></div>
+              <div>
+                <span class="upload-icon"></span>
+                <strong>上传本子封面</strong>
+                <small id="notebook-upload-hint">拍摄封面或从相簿选择</small>
+              </div>
+            </button>
+            <div class="form-grid">
+              <label>
+                本子名称
+                <input id="notebook-new-name" type="text" required />
+              </label>
+              <label>
+                品牌
+                <input id="notebook-new-brand" type="text" />
+              </label>
+              <label>
+                规格
+                <input id="notebook-new-spec" type="text" />
+              </label>
+            </div>
+
+            <button class="primary-button notebook-bottom-action" type="submit">添加本子</button>
+          </form>
         </section>
 
         <section class="view" id="materials-view">
@@ -1585,49 +2930,117 @@ textarea {
               <span class="eyebrow">Materials</span>
               <h1>我的素材</h1>
             </div>
-            <button class="text-button" type="button">新增素材</button>
+            <button class="text-button" data-view="material-detail" type="button">新增素材</button>
           </div>
 
-          <div class="filter-row">
-            <button class="active" type="button">全部</button>
-            <button type="button">贴纸</button>
-            <button type="button">胶带</button>
-            <button type="button">推荐</button>
+          <div class="filter-row material-tabs" aria-label="素材类型">
+            <button class="active" type="button" data-material-tab="all">全部</button>
+            <button type="button" data-material-tab="notebooks">本子</button>
+            <button type="button" data-material-tab="notes">便签</button>
+            <button type="button" data-material-tab="stickers">贴纸</button>
+            <button type="button" data-material-tab="tapes">胶带</button>
           </div>
 
-          <div class="material-list">
-            <article class="material-card">
-              <div class="material-image leaf"></div>
-              <div>
-                <h2>植物旧票贴纸包</h2>
-                <p>OURS · 2026/08/03 · ¥38</p>
-                <span>推荐：纸质好，适合复古拼贴</span>
-              </div>
-            </article>
-            <article class="material-card">
-              <div class="material-image grid"></div>
-              <div>
-                <h2>蓝灰格纹胶带</h2>
-                <p>mt · 2026/07/18 · ¥22</p>
-                <span>一般：颜色好看，但边缘容易翘</span>
-              </div>
-            </article>
-            <article class="material-card">
-              <div class="material-image ticket"></div>
-              <div>
-                <h2>旅行票据便签</h2>
-                <p>TRAVELER'S · 2026/06/21 · ¥46</p>
-                <span>推荐：做日期标题很省心</span>
-              </div>
-            </article>
+          <div class="material-list active" data-material-panel="all">
+            <div class="empty-state" data-empty-state="notes">
+              <img src="./assets/empty-states/notes.png" alt="" />
+              <p>这里还没有素材哦</p>
+            </div>
           </div>
+
+          <div class="material-list" data-material-panel="notebooks">
+            <div class="empty-state" data-empty-state="notebooks">
+              <img src="./assets/empty-states/notebook-box.png" alt="" />
+              <p>这里还没有本子哦</p>
+            </div>
+          </div>
+
+          <div class="material-list" data-material-panel="notes">
+            <div class="empty-state" data-empty-state="notes">
+              <img src="./assets/empty-states/notes.png" alt="" />
+              <p>这里还没有便签哦</p>
+            </div>
+          </div>
+
+          <div class="material-list" data-material-panel="stickers">
+            <div class="empty-state" data-empty-state="stickers">
+              <img src="./assets/empty-states/stickers.png" alt="" />
+              <p>这里还没有贴纸哦</p>
+            </div>
+          </div>
+
+          <div class="material-list" data-material-panel="tapes">
+            <div class="empty-state" data-empty-state="tapes">
+              <img src="./assets/empty-states/tape.png" alt="" />
+              <p>这里还没有胶带哦</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="view record-view" id="material-detail-view">
+          <header class="subpage-head centered-subpage-head">
+            <button class="back-button" data-view="materials" type="button" aria-label="返回我的素材">‹</button>
+            <h1 id="material-detail-title">新增素材</h1>
+          </header>
+
+          <section class="material-upload-field" aria-label="上传素材图片">
+            <button class="material-upload-trigger" type="button" aria-label="上传素材图片">
+              <div class="material-detail-preview" id="material-detail-preview"></div>
+            </button>
+            <button class="material-image-remove" id="material-image-remove" type="button" aria-label="删除素材图片"></button>
+          </section>
+
+          <form class="entry-form" id="material-detail-form">
+            <div class="form-grid">
+              <div class="form-field">
+                素材类型
+                <span class="select-control" data-select id="material-type-select">
+                  <button type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span>本子</span>
+                  </button>
+                  <span class="select-menu" role="listbox">
+                    <button class="active" type="button" data-value="本子">本子</button>
+                    <button type="button" data-value="便签">便签</button>
+                    <button type="button" data-value="贴纸">贴纸</button>
+                    <button type="button" data-value="胶带">胶带</button>
+                  </span>
+                  <input type="hidden" value="本子" />
+                </span>
+              </div>
+              <label>
+                名称
+                <input id="material-name-input" type="text" required />
+              </label>
+              <label>
+                品牌
+                <input id="material-brand-input" type="text" />
+              </label>
+              <label>
+                购买日期
+                <span class="date-control">
+                  <input id="material-date-input" type="date" />
+                </span>
+              </label>
+              <label>
+                价格
+                <input id="material-price-input" type="number" step="0.01" inputmode="decimal" />
+              </label>
+            </div>
+
+            <label>
+              Note
+              <textarea id="material-note-input"></textarea>
+            </label>
+
+            <button class="primary-button" id="material-save-button" type="submit">保存素材</button>
+          </form>
         </section>
 
         <section class="view" id="profile-view">
           <div class="view-head">
             <div>
               <span class="eyebrow">Profile</span>
-              <h1>我的主页</h1>
+              <h1>我的</h1>
             </div>
           </div>
 
@@ -1635,32 +3048,55 @@ textarea {
             <div class="profile-avatar">W</div>
             <div>
               <h2>Yichun 的手帐档案</h2>
-              <p>最近归档到复古拼贴本第 42 页</p>
+              <p>还没有归档手帐，先从一张照片开始。</p>
             </div>
           </section>
 
-          <section class="profile-stats" aria-label="我的数据">
-            <article class="profile-stat-card">
-              <span>归档手帐</span>
-              <strong>6</strong>
-              <small>张</small>
+          <section class="profile-stats profile-card-grid" aria-label="我的数据">
+            <article class="profile-stat-card profile-collection-card">
+              <div>
+                <span>归档手帐</span>
+                <strong><span class="metric-number">0</span><span class="metric-unit">页</span></strong>
+              </div>
+              <div class="profile-card-stage notebook-stage" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
             </article>
-            <article class="profile-stat-card">
-              <span>我的素材</span>
-              <strong>6</strong>
-              <small>件</small>
+            <article class="profile-stat-card profile-collection-card">
+              <div>
+                <span>我的素材</span>
+                <strong><span class="metric-number">0</span><span class="metric-unit">件</span></strong>
+              </div>
+              <div class="profile-card-stage tape-stage" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
             </article>
-            <article class="profile-stat-card">
-              <span>我的手帐本</span>
-              <strong>3</strong>
-              <small>本</small>
+            <article class="profile-stat-card profile-collection-card">
+              <div>
+                <span>我的本子</span>
+                <strong><span class="metric-number">0</span><span class="metric-unit">本</span></strong>
+              </div>
+              <div class="profile-card-stage shelf-stage" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+            </article>
+            <article class="profile-stat-card profile-spend-card">
+              <span>今年花在手帐上</span>
+              <strong><span class="metric-unit currency-symbol">¥</span><span class="metric-number">0</span></strong>
+              <small>素材 · 本子 · 工具</small>
             </article>
           </section>
         </section>
 
         <section class="view record-view" id="record-view">
           <header class="subpage-head">
-            <button class="back-button" id="record-back" type="button" aria-label="返回首页">‹</button>
+            <button class="back-button" id="record-back" type="button" aria-label="返回日历">‹</button>
             <div>
               <span class="eyebrow">New Page</span>
               <h1>记录手帐</h1>
@@ -1680,23 +3116,21 @@ textarea {
             <div class="form-grid">
               <label>
                 日期
-                <input type="date" value="2026-08-15" />
+                <input id="record-date-input" type="date" />
               </label>
               <label>
                 标题
-                <input type="text" value="海边票根拼贴" />
+                <input id="record-title-input" type="text" />
               </label>
               <label>
                 选择本子
-                <select>
-                  <option>复古拼贴本</option>
-                  <option>旅行记录本</option>
-                  <option>日常拼贴本</option>
+                <select id="record-notebook-select">
+                  <option value="">暂无本子</option>
                 </select>
               </label>
               <label>
                 页码
-                <input type="number" value="42" />
+                <input id="record-page-input" type="number" />
               </label>
               <label>
                 页面类型
@@ -1709,147 +3143,305 @@ textarea {
               </label>
             </div>
 
-            <button class="primary-button" type="button">保存到本子和首页</button>
+            <button class="primary-button" id="record-save-button" type="button">保存到本子和日历</button>
           </form>
         </section>
 
-        <section class="source-sheet" id="source-sheet" aria-hidden="true">
-          <button class="sheet-backdrop" id="sheet-backdrop" type="button" aria-label="关闭"></button>
-          <div class="sheet-panel">
-            <div class="sheet-handle"></div>
-            <h2>新增手帐页</h2>
-            <p>选择照片来源</p>
-            <button class="source-option" id="camera-option" type="button">
-              <span class="camera-symbol"></span>
-              打开相机
-            </button>
-            <button class="source-option" id="album-option" type="button">
-              <span class="album-symbol"></span>
-              我的相簿
-            </button>
-            <button class="source-cancel" id="source-cancel" type="button">取消</button>
-          </div>
+        <input id="scan-input" class="hidden-file-input" type="file" accept="image/*" />
+        <input id="notebook-image-input" class="hidden-file-input" type="file" accept="image/*" />
+        <input id="notebook-edit-image-input" class="hidden-file-input" type="file" accept="image/*" />
+        <input id="material-image-input" class="hidden-file-input" type="file" accept="image/*" />
+
+        <section class="notebook-action-modal" id="notebook-action-modal" aria-hidden="true">
+          <article class="notebook-action-sheet" role="dialog" aria-modal="true" aria-label="本子操作">
+            <button type="button" id="notebook-edit-info">编辑本子信息</button>
+            <button type="button" id="notebook-toggle-status">归入已归档</button>
+          </article>
         </section>
 
-        <input id="scan-input" class="hidden-file-input" type="file" accept="image/*" />
+        <section class="confirm-modal" id="material-delete-modal" aria-hidden="true">
+          <article class="confirm-sheet" role="dialog" aria-modal="true" aria-labelledby="material-delete-title">
+            <h2 id="material-delete-title">删除这个素材？</h2>
+            <p>删除后会从素材列表和我的档案里移除。</p>
+            <div class="confirm-actions">
+              <button class="secondary-button" id="material-delete-cancel" type="button">取消</button>
+              <button class="danger-button" id="material-delete-confirm" type="button">删除</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="document-scanner" id="document-scanner" aria-hidden="true">
+          <header class="scanner-head">
+            <button class="scanner-text-button" id="scanner-cancel" type="button">取消</button>
+            <h1>调整页面边界</h1>
+            <button class="scanner-text-button" id="scanner-retake" type="button">重选</button>
+          </header>
+
+          <div class="scanner-stage" id="scanner-stage">
+            <img id="scanner-image" alt="待扫描手帐页" />
+            <svg class="scanner-overlay" id="scanner-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <polygon id="scanner-polygon" points="10,10 90,10 90,90 10,90"></polygon>
+            </svg>
+            <button class="scanner-handle" data-corner="tl" type="button" aria-label="左上角"></button>
+            <button class="scanner-handle" data-corner="tr" type="button" aria-label="右上角"></button>
+            <button class="scanner-handle" data-corner="br" type="button" aria-label="右下角"></button>
+            <button class="scanner-handle" data-corner="bl" type="button" aria-label="左下角"></button>
+          </div>
+
+          <p class="scanner-helper">拖动四个角贴住手帐页边缘，完成后会生成扫描预览。</p>
+          <button class="primary-button scanner-finish" id="scanner-finish" type="button">完成扫描</button>
+        </section>
 
         <section class="story-viewer" id="story-viewer" aria-hidden="true">
-          <button class="story-close" id="story-close" type="button" aria-label="返回首页">‹</button>
-          <div class="story-progress" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+          <button class="story-close" id="story-close" type="button" aria-label="关闭详情"></button>
           <div class="story-stage">
             <div class="story-paper paper-collage" id="story-paper"></div>
           </div>
           <article class="story-caption">
-            <p id="story-date">2026 年 8 月 15 日</p>
-            <h2 id="story-title">海边票根拼贴</h2>
-            <span id="story-meta">复古拼贴本 · 第 42 页 · 单页扫描</span>
-            <div class="story-tags" id="story-tags"></div>
-            <small id="story-note">今天用了偏冷的蓝灰色，和旧票据很搭。</small>
+            <p id="story-date"></p>
+            <h2 id="story-title"></h2>
+            <span id="story-meta"></span>
           </article>
         </section>
       </section>
     </main>
 
     <script>
-const entries = {
-  1: { count: 1, style: "paper-collage", title: "夏日车票拼贴", notebook: "旅行记录本", page: 12, tags: ["车票", "复古", "蓝灰胶带"] },
-  3: { count: 2, style: "blue", title: "蓝色收据页", notebook: "复古拼贴本", page: 28, tags: ["收据", "格纹", "冷色"] },
-  5: { count: 1, style: "rose", title: "玫瑰便签页", notebook: "日常拼贴本", page: 9, tags: ["玫瑰", "便签", "印章"] },
-  7: { count: 1, style: "paper-collage", title: "旧书页练习", notebook: "复古拼贴本", page: 34, tags: ["旧书页", "植物", "棕色"] },
-  8: { count: 3, style: "blue", title: "三张小票拼贴", notebook: "旅行记录本", page: 18, tags: ["小票", "跨页", "蓝色"] },
-  10: { count: 1, style: "rose", title: "午后粉色页", notebook: "日常拼贴本", page: 16, tags: ["粉色", "花", "贴纸"] },
-  12: { count: 2, style: "paper-collage", title: "植物旧票贴纸", notebook: "复古拼贴本", page: 38, tags: ["OURS", "植物", "旧票"] },
-  14: { count: 1, style: "blue", title: "蓝灰格纹实验", notebook: "复古拼贴本", page: 40, tags: ["mt", "格纹", "试色"] },
-  15: { count: 1, style: "paper-collage today", title: "海边票根拼贴", notebook: "复古拼贴本", page: 42, tags: ["票根", "海边", "TN"] },
-  18: { count: 1, style: "rose", title: "红色印章页", notebook: "日常拼贴本", page: 21, tags: ["印章", "红色", "标题"] },
-  20: { count: 2, style: "paper-collage", title: "咖啡馆收纳页", notebook: "旅行记录本", page: 24, tags: ["咖啡", "票据", "便签"] },
-  22: { count: 1, style: "blue", title: "雨天蓝色拼贴", notebook: "复古拼贴本", page: 45, tags: ["雨天", "蓝色", "胶带"] },
-  25: { count: 1, style: "rose", title: "小花边角料", notebook: "日常拼贴本", page: 29, tags: ["边角料", "小花", "拼贴"] },
-  28: { count: 2, style: "paper-collage", title: "月末素材复盘", notebook: "复古拼贴本", page: 51, tags: ["复盘", "素材", "推荐"] },
-};
+const entries = {};
 
 const calendarGrid = document.querySelector("#calendar-grid");
 const entryCardList = document.querySelector("#entry-card-list");
 const entryListKicker = document.querySelector("#entry-list-kicker");
 const clearFilter = document.querySelector("#clear-filter");
-const firstWeekOffset = 5;
+const calendarTitle = document.querySelector("#calendar-title");
+const calendarEyebrow = document.querySelector("#calendar-eyebrow");
+const monthCode = document.querySelector("#month-code");
+const prevMonth = document.querySelector("#prev-month");
+const nextMonth = document.querySelector("#next-month");
 const storyViewer = document.querySelector("#story-viewer");
 const storyPaper = document.querySelector("#story-paper");
 const storyDate = document.querySelector("#story-date");
 const storyTitle = document.querySelector("#story-title");
 const storyMeta = document.querySelector("#story-meta");
-const storyTags = document.querySelector("#story-tags");
-const storyNote = document.querySelector("#story-note");
 const homeAddButton = document.querySelector("#home-add-button");
-const sourceSheet = document.querySelector("#source-sheet");
-const sheetBackdrop = document.querySelector("#sheet-backdrop");
-const sourceCancel = document.querySelector("#source-cancel");
-const cameraOption = document.querySelector("#camera-option");
-const albumOption = document.querySelector("#album-option");
 const recordBack = document.querySelector("#record-back");
 const scanInput = document.querySelector("#scan-input");
-const scanForm = document.querySelector(".entry-form");
+const scanForm = document.querySelector("#record-view .entry-form");
 const scanStatus = document.querySelector("#scan-status");
-const orderedDays = Object.keys(entries).map(Number).sort((a, b) => a - b);
-const journalCards = orderedDays.flatMap((day) => {
-  const data = entries[day];
+const scanResultImage = document.querySelector(".scan-result-image");
+const recordDateInput = document.querySelector("#record-date-input");
+const recordTitleInput = document.querySelector("#record-title-input");
+const recordNotebookSelect = document.querySelector("#record-notebook-select");
+const recordPageInput = document.querySelector("#record-page-input");
+const recordSaveButton = document.querySelector("#record-save-button");
+const documentScanner = document.querySelector("#document-scanner");
+const scannerStage = document.querySelector("#scanner-stage");
+const scannerImage = document.querySelector("#scanner-image");
+const scannerPolygon = document.querySelector("#scanner-polygon");
+const scannerHandles = document.querySelectorAll(".scanner-handle");
+const scannerCancel = document.querySelector("#scanner-cancel");
+const scannerRetake = document.querySelector("#scanner-retake");
+const scannerFinish = document.querySelector("#scanner-finish");
+const notebookFilterTabs = document.querySelectorAll("[data-notebook-filter]");
+const notebookInfoCover = document.querySelector("#notebook-info-cover");
+const notebookInfoName = document.querySelector("#notebook-info-name");
+const notebookInfoMeta = document.querySelector("#notebook-info-meta");
+const notebookInfoEntryList = document.querySelector("#notebook-info-entry-list");
+const notebookActionTrigger = document.querySelector("#notebook-action-trigger");
+const notebookActionModal = document.querySelector("#notebook-action-modal");
+const notebookToggleStatus = document.querySelector("#notebook-toggle-status");
+const notebookEditInfo = document.querySelector("#notebook-edit-info");
+const materialTabs = document.querySelectorAll("[data-material-tab]");
+const materialPanels = document.querySelectorAll("[data-material-panel]");
+const materialsView = document.querySelector("#materials-view");
+const materialDetailTitle = document.querySelector("#material-detail-title");
+const materialDetailForm = document.querySelector("#material-detail-form");
+const materialDetailPreview = document.querySelector("#material-detail-preview");
+const materialTypeSelect = document.querySelector("#material-type-select");
+const materialNameInput = document.querySelector("#material-name-input");
+const materialBrandInput = document.querySelector("#material-brand-input");
+const materialDateInput = document.querySelector("#material-date-input");
+const materialPriceInput = document.querySelector("#material-price-input");
+const materialNoteInput = document.querySelector("#material-note-input");
+const materialSaveButton = document.querySelector("#material-save-button");
+const customSelects = document.querySelectorAll("[data-select]");
+const materialUploadTrigger = document.querySelector(".material-upload-trigger");
+const materialImageRemove = document.querySelector("#material-image-remove");
+const materialImageInput = document.querySelector("#material-image-input");
+const materialDeleteModal = document.querySelector("#material-delete-modal");
+const materialDeleteCancel = document.querySelector("#material-delete-cancel");
+const materialDeleteConfirm = document.querySelector("#material-delete-confirm");
+const notebookModeTabs = document.querySelectorAll("[data-notebook-mode]");
+const notebookModePanels = document.querySelectorAll("[data-notebook-panel]");
+const libraryNotebookPicker = document.querySelector(".library-notebook-picker");
+const libraryNotebookAddButton = document.querySelector('[data-notebook-panel="library"] .notebook-bottom-action');
+const notebookShelf = document.querySelector(".notebook-shelf");
+const notebookNewForm = document.querySelector("#notebook-new-form");
+const notebookNewCoverPreview = document.querySelector("#notebook-new-cover-preview");
+const notebookUploadTrigger = document.querySelector(".notebook-upload-trigger");
+const notebookImageInput = document.querySelector("#notebook-image-input");
+const notebookUploadHint = document.querySelector("#notebook-upload-hint");
+const notebookNewName = document.querySelector("#notebook-new-name");
+const notebookNewBrand = document.querySelector("#notebook-new-brand");
+const notebookNewSpec = document.querySelector("#notebook-new-spec");
+const notebookEditForm = document.querySelector("#notebook-edit-form");
+const notebookEditCoverPreview = document.querySelector("#notebook-edit-cover-preview");
+const notebookEditUploadTrigger = document.querySelector(".notebook-edit-upload-trigger");
+const notebookEditImageInput = document.querySelector("#notebook-edit-image-input");
+const notebookEditUploadHint = document.querySelector("#notebook-edit-upload-hint");
+const notebookEditName = document.querySelector("#notebook-edit-name");
+const notebookEditBrand = document.querySelector("#notebook-edit-brand");
+const notebookEditSpec = document.querySelector("#notebook-edit-spec");
+const notebookEditStatus = document.querySelector("#notebook-edit-status");
+
+const chineseMonths = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+const englishMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const calendarMonths = [];
+
+for (let year = 2026; year <= 2028; year += 1) {
+  for (let month = 0; month < 12; month += 1) {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const mondayFirstOffset = (new Date(year, month, 1).getDay() + 6) % 7;
+    calendarMonths.push({ year, month, daysInMonth, mondayFirstOffset });
+  }
+}
+
+let currentMonthIndex = calendarMonths.findIndex((item) => item.year === 2026 && item.month === 7);
+let selectedDate = null;
+let currentNotebookStatus = "writing";
+let currentNotebookCard = null;
+let pendingNotebookCover = null;
+let pendingNotebookTilt = 0;
+let currentMaterialId = null;
+let pendingDeleteMaterialId = null;
+let suppressMaterialClick = false;
+let materialLongPressTimer = null;
+let pendingMaterialImage = null;
+let pendingMaterialTilt = 0;
+let materialImageCleared = false;
+let scannerImageUrl = "";
+let scannerCorners = {
+  tl: { x: 14, y: 12 },
+  tr: { x: 86, y: 12 },
+  br: { x: 88, y: 88 },
+  bl: { x: 12, y: 88 },
+};
+let activeScannerCorner = null;
+
+const journalCards = Object.keys(entries).sort().flatMap((dateKey) => {
+  const data = entries[dateKey];
+  const day = Number(dateKey.slice(-2));
+  const month = Number(dateKey.slice(5, 7));
+  const year = Number(dateKey.slice(0, 4));
   return Array.from({ length: data.count }, (_, index) => ({
     ...data,
+    dateKey,
     day,
-    id: `${day}-${index + 1}`,
+    month,
+    year,
+    id: `${dateKey}-${index + 1}`,
     title: data.count > 1 ? `${data.title} ${index + 1}` : data.title,
     page: data.page + index,
   }));
 });
-let selectedDay = null;
 
-for (let i = 0; i < firstWeekOffset; i += 1) {
-  const spacer = document.createElement("div");
-  spacer.className = "day-cell empty";
-  spacer.setAttribute("aria-hidden", "true");
-  calendarGrid.append(spacer);
+function padNumber(value) {
+  return String(value).padStart(2, "0");
 }
 
-for (let day = 1; day <= 31; day += 1) {
-  const data = entries[day];
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = data ? `day-cell has-entry ${data.style.includes("today") ? "today" : ""}` : "day-cell";
-  button.setAttribute("aria-label", data ? `8月${day}日，${data.count}条手帐记录` : `8月${day}日，暂无记录`);
-  button.innerHTML = `<span>${day}</span>`;
+function getMonthState() {
+  return calendarMonths[currentMonthIndex];
+}
 
-  if (data) {
-    const art = document.createElement("div");
-    art.className = `day-art ${data.style.replace("today", "").trim()}`;
-    button.append(art);
+function getMonthKey({ year, month }) {
+  return `${year}-${padNumber(month + 1)}`;
+}
 
-    if (data.count > 1) {
-      const count = document.createElement("small");
-      count.textContent = data.count;
-      button.append(count);
-    }
+function getDateKey(year, month, day) {
+  return `${year}-${padNumber(month + 1)}-${padNumber(day)}`;
+}
+
+function formatChineseDate(card) {
+  return `${card.year} 年 ${card.month} 月 ${card.day} 日`;
+}
+
+function renderCalendar() {
+  const monthState = getMonthState();
+  const monthLabel = chineseMonths[monthState.month];
+  const englishLabel = `${englishMonths[monthState.month]} ${monthState.year}`;
+  const monthKey = getMonthKey(monthState);
+
+  calendarTitle.textContent = monthLabel;
+  calendarEyebrow.textContent = englishLabel;
+  monthCode.textContent = `${monthState.year}.${padNumber(monthState.month + 1)}`;
+  prevMonth.disabled = currentMonthIndex === 0;
+  nextMonth.disabled = currentMonthIndex === calendarMonths.length - 1;
+  calendarGrid.innerHTML = "";
+
+  for (let i = 0; i < monthState.mondayFirstOffset; i += 1) {
+    const spacer = document.createElement("div");
+    spacer.className = "day-cell empty";
+    spacer.setAttribute("aria-hidden", "true");
+    calendarGrid.append(spacer);
   }
 
-  button.addEventListener("click", () => {
-    if (data) {
-      selectedDay = day;
-      document.querySelectorAll(".day-cell").forEach((cell) => cell.classList.remove("selected"));
-      button.classList.add("selected");
-      renderEntryCards(day);
-    }
-  });
+  for (let day = 1; day <= monthState.daysInMonth; day += 1) {
+    const dateKey = getDateKey(monthState.year, monthState.month, day);
+    const data = entries[dateKey];
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = data ? `day-cell has-entry ${data.style.includes("today") ? "today" : ""}` : "day-cell";
+    button.classList.toggle("selected", selectedDate === dateKey);
+    button.setAttribute("aria-label", data ? `${monthLabel}${day}日，${data.count}条手帐记录` : `${monthLabel}${day}日，暂无记录`);
+    button.innerHTML = `<span>${day}</span>`;
 
-  calendarGrid.append(button);
+    if (data) {
+      const art = document.createElement("div");
+      art.className = `day-art ${data.style.replace("today", "").trim()}`;
+      button.append(art);
+
+      if (data.count > 1) {
+        const count = document.createElement("small");
+        count.textContent = data.count;
+        button.append(count);
+      }
+    }
+
+    button.addEventListener("click", () => {
+      selectedDate = dateKey;
+      renderCalendar();
+      renderEntryCards(selectedDate);
+    });
+
+    calendarGrid.append(button);
+  }
+
+  if (selectedDate && !selectedDate.startsWith(monthKey)) {
+    selectedDate = null;
+  }
 }
 
-function renderEntryCards(day = null) {
-  const cards = day ? journalCards.filter((card) => card.day === day) : journalCards;
-  entryListKicker.textContent = day ? `8 月 ${day} 日` : "本月手帐";
-  clearFilter.hidden = !day;
+function renderEntryCards(dateKey = null) {
+  const monthState = getMonthState();
+  const monthKey = getMonthKey(monthState);
+  const cards = dateKey ? journalCards.filter((card) => card.dateKey === dateKey) : journalCards.filter((card) => card.dateKey.startsWith(monthKey));
+  const selectedMonth = dateKey ? Number(dateKey.slice(5, 7)) : null;
+  const selectedDay = dateKey ? Number(dateKey.slice(-2)) : null;
+  entryListKicker.textContent = dateKey ? `${selectedMonth} 月 ${selectedDay} 日` : "本月手帐";
+  clearFilter.hidden = !dateKey;
   entryCardList.innerHTML = cards
     .map(
       (card) => `
@@ -1858,12 +3450,12 @@ function renderEntryCards(day = null) {
           <div>
             <p>${card.notebook} · 第 ${card.page} 页</p>
             <h2>${card.title}</h2>
-            <span>2026 年 8 月 ${card.day} 日 · 单页扫描</span>
+            <span>${formatChineseDate(card)} · 单页扫描</span>
           </div>
         </button>
       `,
     )
-    .join("");
+    .join("") || emptyStateMarkup("journal", "这里没有归档的手帐哦");
 }
 
 function openStory(cardId) {
@@ -1882,11 +3474,9 @@ function renderStory(cardId) {
   if (!data) return;
 
   storyPaper.className = `story-paper ${data.style.replace("today", "").trim()}`;
-  storyDate.textContent = `2026 年 8 月 ${data.day} 日`;
+  storyDate.textContent = formatChineseDate(data);
   storyTitle.textContent = data.title;
   storyMeta.textContent = `${data.notebook} · 第 ${data.page} 页 · 单页扫描`;
-  storyTags.innerHTML = data.tags.map((tag) => `<span>${tag}</span>`).join("");
-  storyNote.textContent = "已链接到本子页面，可以继续查看扫描件和页面归档信息。";
 }
 
 function showView(viewName) {
@@ -1894,7 +3484,12 @@ function showView(viewName) {
     view.classList.toggle("active", view.id === `${viewName}-view`);
   });
 
-  document.querySelector(".phone-frame").classList.toggle("record-mode", viewName === "record");
+  if (viewName === "notebook-detail") renderLibraryNotebookPicker();
+
+  document.querySelector(".phone-frame").classList.toggle(
+    "record-mode",
+    viewName === "record" || viewName.endsWith("-detail") || viewName === "notebook-info" || viewName === "notebook-edit",
+  );
 
   document.querySelectorAll(".nav-item").forEach((item) => {
     item.classList.toggle("active", item.dataset.view === viewName);
@@ -1905,8 +3500,1085 @@ function showView(viewName) {
   });
 }
 
+function updateProfileStats() {
+  const metricCards = document.querySelectorAll(".profile-stat-card");
+  const archivedPages = journalCards.length;
+  const materialCards = document.querySelectorAll('[data-material-panel="all"] .material-card');
+  const notebookCards = document.querySelectorAll("#notebooks-view .shelf-notebook-card");
+  const spend = [...materialCards].reduce((sum, card) => sum + Number(card.dataset.materialPrice || 0), 0).toFixed(2);
+  const values = [archivedPages, materialCards.length, notebookCards.length, spend];
+  metricCards.forEach((card, index) => {
+    const number = card.querySelector(".metric-number");
+    if (number) number.textContent = String(values[index] ?? 0);
+  });
+  updateProfileCollections();
+}
+
+function updateMonthSummary() {
+  const summary = document.querySelector(".month-summary");
+  if (!summary) return;
+  const current = calendarMonths[currentMonthIndex];
+  const monthKey = `${current.year}-${String(current.month + 1).padStart(2, "0")}`;
+  const monthlyCards = journalCards.filter((card) => card.dateKey.startsWith(monthKey));
+  const days = new Set(monthlyCards.map((card) => card.dateKey)).size;
+  summary.querySelector("p").textContent = `${chineseMonths[current.month]}记录`;
+  summary.querySelector("strong").textContent = `${days} 天`;
+  summary.querySelector("span").textContent = `已归档 ${monthlyCards.length} 页，使用 ${document.querySelectorAll('[data-material-panel="all"] .material-card').length} 件素材`;
+}
+
+function removeEmptyState(container) {
+  container?.querySelectorAll("[data-empty-state]").forEach((item) => item.remove());
+}
+
+function getMaterialEmptyText(panelName) {
+  return {
+    all: "这里还没有素材哦",
+    notebooks: "这里还没有本子哦",
+    notes: "这里还没有便签哦",
+    stickers: "这里还没有贴纸哦",
+    tapes: "这里还没有胶带哦",
+  }[panelName] || "这里还没有素材哦";
+}
+
+function getMaterialEmptyType(panelName) {
+  return {
+    all: "notes",
+    notebooks: "notebooks",
+    notes: "notes",
+    stickers: "stickers",
+    tapes: "tapes",
+  }[panelName] || "notes";
+}
+
+function updateMaterialEmptyStates() {
+  materialPanels.forEach((panel) => {
+    const hasCards = Boolean(panel.querySelector(".material-card"));
+    panel.querySelectorAll("[data-empty-state]").forEach((item) => item.remove());
+    if (hasCards) return;
+    panel.insertAdjacentHTML("beforeend", emptyStateMarkup(getMaterialEmptyType(panel.dataset.materialPanel), getMaterialEmptyText(panel.dataset.materialPanel)));
+  });
+}
+
+function updateRecordNotebookOptions() {
+  if (!recordNotebookSelect) return;
+  const names = [...document.querySelectorAll("#notebooks-view .shelf-notebook-card h2")].map((item) => item.textContent.trim());
+  recordNotebookSelect.innerHTML = names.length
+    ? names.map((name) => `<option>${name}</option>`).join("")
+    : '<option value="">暂无本子</option>';
+}
+
+const storageKey = "journalArchiveDraftState";
+const emptyStateAssets = {
+  journal: "./assets/empty-states/journal-folder.png",
+  notebooks: "./assets/empty-states/notebook-box.png",
+  notes: "./assets/empty-states/notes.png",
+  stickers: "./assets/empty-states/stickers.png",
+  tapes: "./assets/empty-states/tape.png",
+};
+
+function emptyStateMarkup(type, text) {
+  const image = emptyStateAssets[type] || emptyStateAssets.journal;
+  return `
+    <div class="empty-state" data-empty-state="${type}">
+      <img src="${image}" alt="" />
+      <p>${text}</p>
+    </div>
+  `;
+}
+
+function readCutoutData(container) {
+  return container?.querySelector(".cutout-image")?.src || "";
+}
+
+function readBackgroundImageData(element) {
+  const background = element?.style.backgroundImage || "";
+  const match = background.match(/^url\(["']?(.*?)["']?\)$/);
+  return match?.[1] || "";
+}
+
+function persistAppState() {
+  try {
+    const materials = [...document.querySelectorAll('[data-material-panel="all"] .material-card')].map((card) => ({
+      id: card.dataset.materialId,
+      type: card.dataset.materialType,
+      category: card.dataset.materialCategory,
+      brand: card.dataset.materialBrand,
+      date: card.dataset.materialDate,
+      price: card.dataset.materialPrice,
+      note: card.dataset.materialNote,
+      tilt: card.dataset.materialTilt || "0",
+      name: card.querySelector("h2")?.textContent.trim() || "",
+      imageData: readCutoutData(card.querySelector(".material-image")),
+      imageEmpty: card.querySelector(".material-image")?.classList.contains("material-image-empty") || false,
+    }));
+    const notebooks = [...document.querySelectorAll("#notebooks-view .shelf-notebook-card")].map((card) => ({
+      name: card.querySelector("h2")?.textContent.trim() || "",
+      brand: card.dataset.notebookBrand || "",
+      spec: card.dataset.notebookSpec || "",
+      status: card.dataset.notebookStatus || "writing",
+      tilt: card.dataset.notebookTilt || "0",
+      scanCount: card.querySelector(".scan-count")?.textContent.trim() || "0",
+      coverData: readCutoutData(card.querySelector(".notebook-cover")),
+    }));
+    localStorage.setItem(storageKey, JSON.stringify({ version: 1, materials, notebooks, journalCards }));
+  } catch (error) {
+    console.warn("Could not save app state:", error);
+  }
+}
+
+function restoreMaterial(saved) {
+  const previousImage = pendingMaterialImage;
+  const previousTilt = pendingMaterialTilt;
+  const previousCleared = materialImageCleared;
+  pendingMaterialImage = saved.imageData || null;
+  pendingMaterialTilt = Number(saved.tilt || 0);
+  materialImageCleared = Boolean(saved.imageEmpty);
+  syncMaterialCards({
+    id: saved.id || `material-${Date.now()}`,
+    type: saved.type || "本子",
+    category: saved.category || materialTypeToCategory(saved.type || "本子"),
+    name: saved.name || "未命名素材",
+    brand: saved.brand || "",
+    date: saved.date || "",
+    price: saved.price || "",
+    note: saved.note || "",
+  }, { skipPersist: true });
+  pendingMaterialImage = previousImage;
+  pendingMaterialTilt = previousTilt;
+  materialImageCleared = previousCleared;
+}
+
+function restoreNotebook(saved) {
+  const card = createNotebookCard({
+    name: saved.name || "未命名本子",
+    brand: saved.brand || "",
+    spec: saved.spec || "",
+    coverUrl: saved.coverData || "",
+    tilt: Number(saved.tilt || 0),
+  });
+  removeEmptyState(notebookShelf);
+  notebookShelf?.append(card);
+  updateNotebookStatus(card, saved.status || "writing");
+  const scanCount = card.querySelector(".scan-count");
+  if (scanCount) scanCount.textContent = saved.scanCount || "0";
+}
+
+function restoreJournalCard(saved) {
+  if (!saved?.dateKey || journalCards.some((card) => card.id === saved.id)) return;
+  journalCards.push(saved);
+  entries[saved.dateKey] = {
+    count: (entries[saved.dateKey]?.count || 0) + 1,
+    style: saved.style || "paper-collage",
+    title: saved.title || "未命名手帐页",
+    notebook: saved.notebook || "未选择本子",
+    page: saved.page || 1,
+    tags: saved.tags || [],
+  };
+}
+
+function makeProfilePreviewItem(kind, index) {
+  const item = document.createElement("i");
+  item.className = `profile-preview-item ${kind}`;
+  item.style.setProperty("--preview-index", String(index));
+  return item;
+}
+
+function setProfileStageItems(stage, items, fallbackClass) {
+  if (!stage) return;
+  stage.innerHTML = "";
+  stage.classList.toggle("is-dynamic", items.length > 0);
+  if (!items.length) {
+    for (let index = 0; index < 3; index += 1) {
+      stage.append(document.createElement("i"));
+    }
+    return;
+  }
+  items.slice(0, 3).forEach((item) => stage.append(item));
+}
+
+function createProfileImagePreview(src, kind, index) {
+  const item = makeProfilePreviewItem(kind, index);
+  const image = document.createElement("img");
+  image.alt = "";
+  image.src = src;
+  item.append(image);
+  return item;
+}
+
+function createProfilePaperPreview(card, index) {
+  const item = makeProfilePreviewItem("journal-page", index);
+  const paper = document.createElement("span");
+  paper.className = `profile-paper-preview ${card.style || "paper-collage"}`;
+  item.append(paper);
+  return item;
+}
+
+function updateProfileCollections() {
+  const journalStage = document.querySelector(".profile-card-stage.notebook-stage");
+  const materialStage = document.querySelector(".profile-card-stage.tape-stage");
+  const notebookStage = document.querySelector(".profile-card-stage.shelf-stage");
+
+  const journalItems = journalCards.slice(0, 3).map((card, index) => {
+    return card.imageData ? createProfileImagePreview(card.imageData, "journal-page", index) : createProfilePaperPreview(card, index);
+  });
+
+  const materialItems = [...document.querySelectorAll('[data-material-panel="all"] .material-card')]
+    .filter((card) => card.dataset.materialType !== "本子" && card.dataset.materialCategory !== "notebooks")
+    .slice(0, 3)
+    .map((card, index) => {
+    const image = card.querySelector(".material-image");
+    const cutout = readCutoutData(image);
+    const background = readBackgroundImageData(image);
+    if (cutout || background) return createProfileImagePreview(cutout || background, "material-asset", index);
+    const item = makeProfilePreviewItem("material-asset material-default", index);
+    item.classList.add(materialCategoryToClass(card.dataset.materialCategory || "notebooks"));
+    return item;
+  });
+
+  const notebookItems = [...document.querySelectorAll("#notebooks-view .shelf-notebook-card")].slice(0, 3).map((card, index) => {
+    const cover = card.querySelector(".notebook-cover");
+    const cutout = readCutoutData(cover);
+    const background = readBackgroundImageData(cover);
+    if (cutout || background) return createProfileImagePreview(cutout || background, "notebook-cover-preview", index);
+    const item = makeProfilePreviewItem("notebook-cover-preview notebook-default", index);
+    ["default-cover-paper", "default-cover-blue", "default-cover-rose", "travel", "daily"].forEach((className) => {
+      if (cover?.classList.contains(className)) item.classList.add(className);
+    });
+    return item;
+  });
+
+  setProfileStageItems(journalStage, journalItems, "journal-page");
+  setProfileStageItems(materialStage, materialItems, "material-asset");
+  setProfileStageItems(notebookStage, notebookItems, "notebook-cover-preview");
+}
+
+async function loadPersistedState() {
+  const raw = localStorage.getItem(storageKey);
+  if (!raw) return;
+  try {
+    const state = JSON.parse(raw);
+    for (const material of state.materials || []) {
+      if (material.imageData?.startsWith("data:image")) material.imageData = await trimTransparentPixels(material.imageData);
+    }
+    for (const notebook of state.notebooks || []) {
+      if (notebook.coverData?.startsWith("data:image")) notebook.coverData = await trimTransparentPixels(notebook.coverData);
+    }
+    state.materials?.forEach(restoreMaterial);
+    state.notebooks?.forEach(restoreNotebook);
+    state.journalCards?.forEach(restoreJournalCard);
+    persistAppState();
+  } catch (error) {
+    console.warn("Could not restore saved app state:", error);
+  }
+}
+
+function randomTilt() {
+  return Math.round((Math.random() * 30 - 15) * 10) / 10;
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function fileToDataUrl(file) {
+  return blobToDataUrl(file);
+}
+
+function imageToElement(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
+async function trimTransparentPixels(dataUrl) {
+  const image = await imageToElement(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+  const context = canvas.getContext("2d");
+  context.drawImage(image, 0, 0);
+  const { data, width, height } = context.getImageData(0, 0, canvas.width, canvas.height);
+  let minX = width;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      if (data[(y * width + x) * 4 + 3] <= 8) continue;
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+  }
+
+  if (maxX < minX || maxY < minY) return dataUrl;
+  const padding = Math.ceil(Math.max(maxX - minX + 1, maxY - minY + 1) * 0.04);
+  const sourceX = Math.max(0, minX - padding);
+  const sourceY = Math.max(0, minY - padding);
+  const sourceWidth = Math.min(width - sourceX, maxX - minX + 1 + padding * 2);
+  const sourceHeight = Math.min(height - sourceY, maxY - minY + 1 + padding * 2);
+  const output = document.createElement("canvas");
+  output.width = sourceWidth;
+  output.height = sourceHeight;
+  output.getContext("2d").drawImage(canvas, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
+  return output.toDataURL("image/png");
+}
+
+async function removeImageBackground(file) {
+  if (window.location.protocol === "file:") return fileToDataUrl(file);
+
+  const formData = new FormData();
+  formData.append("image_file", file);
+  formData.append("size", "auto");
+
+  const response = await fetch("/api/remove-bg", {
+    method: "POST",
+    body: formData,
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return trimTransparentPixels(await blobToDataUrl(await response.blob()));
+}
+
+async function prepareCutoutImage(file) {
+  try {
+    return await removeImageBackground(file);
+  } catch (error) {
+    console.warn("remove.bg fallback:", error);
+    return fileToDataUrl(file);
+  }
+}
+
+function renderScannerBoundary() {
+  if (!scannerPolygon) return;
+  const points = ["tl", "tr", "br", "bl"].map((key) => `${scannerCorners[key].x},${scannerCorners[key].y}`).join(" ");
+  scannerPolygon.setAttribute("points", points);
+  scannerHandles.forEach((handle) => {
+    const corner = scannerCorners[handle.dataset.corner];
+    handle.style.left = `${corner.x}%`;
+    handle.style.top = `${corner.y}%`;
+  });
+}
+
+function openDocumentScanner(file) {
+  scannerImageUrl = URL.createObjectURL(file);
+  scannerCorners = {
+    tl: { x: 14, y: 12 },
+    tr: { x: 86, y: 12 },
+    br: { x: 88, y: 88 },
+    bl: { x: 12, y: 88 },
+  };
+  if (scannerImage) scannerImage.src = scannerImageUrl;
+  documentScanner?.classList.add("open");
+  documentScanner?.setAttribute("aria-hidden", "false");
+  renderScannerBoundary();
+}
+
+function closeDocumentScanner() {
+  documentScanner?.classList.remove("open");
+  documentScanner?.setAttribute("aria-hidden", "true");
+  activeScannerCorner = null;
+}
+
+function updateScannerCorner(event) {
+  if (!activeScannerCorner || !scannerStage) return;
+  const rect = scannerStage.getBoundingClientRect();
+  const x = Math.min(96, Math.max(4, ((event.clientX - rect.left) / rect.width) * 100));
+  const y = Math.min(96, Math.max(4, ((event.clientY - rect.top) / rect.height) * 100));
+  scannerCorners[activeScannerCorner] = { x, y };
+  renderScannerBoundary();
+}
+
+function scannerPointToImage(point) {
+  const stageRect = scannerStage.getBoundingClientRect();
+  const imageRatio = scannerImage.naturalWidth / scannerImage.naturalHeight;
+  const stageRatio = stageRect.width / stageRect.height;
+  const displayWidth = imageRatio > stageRatio ? stageRect.width : stageRect.height * imageRatio;
+  const displayHeight = imageRatio > stageRatio ? stageRect.width / imageRatio : stageRect.height;
+  const offsetX = (stageRect.width - displayWidth) / 2;
+  const offsetY = (stageRect.height - displayHeight) / 2;
+  const stageX = (point.x / 100) * stageRect.width;
+  const stageY = (point.y / 100) * stageRect.height;
+  const imageX = Math.min(1, Math.max(0, (stageX - offsetX) / displayWidth));
+  const imageY = Math.min(1, Math.max(0, (stageY - offsetY) / displayHeight));
+  return {
+    x: imageX * scannerImage.naturalWidth,
+    y: imageY * scannerImage.naturalHeight,
+  };
+}
+
+function finishDocumentScan() {
+  if (!scannerImage?.naturalWidth) return;
+  const imagePoints = Object.values(scannerCorners).map(scannerPointToImage);
+  const xs = imagePoints.map((point) => point.x);
+  const ys = imagePoints.map((point) => point.y);
+  const sourceX = Math.max(0, Math.min(...xs));
+  const sourceY = Math.max(0, Math.min(...ys));
+  const sourceWidth = Math.max(1, Math.min(scannerImage.naturalWidth, Math.max(...xs)) - sourceX);
+  const sourceHeight = Math.max(1, Math.min(scannerImage.naturalHeight, Math.max(...ys)) - sourceY);
+  const canvas = document.createElement("canvas");
+  canvas.width = 900;
+  canvas.height = Math.max(900, Math.round((sourceHeight / sourceWidth) * 900));
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.filter = "brightness(1.1) contrast(1.08) saturate(0.86)";
+  context.drawImage(scannerImage, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
+  const scannedUrl = canvas.toDataURL("image/jpeg", 0.92);
+  scanResultImage.style.backgroundImage = `url("${scannedUrl}")`;
+  scanResultImage.className = "scan-result-image";
+  scanForm.classList.remove("scanning");
+  scanForm.classList.add("scanned");
+  scanStatus.textContent = "扫描完成";
+  closeDocumentScanner();
+  showView("record");
+}
+
+function saveRecordEntry() {
+  const dateKey = recordDateInput?.value || new Date().toISOString().slice(0, 10);
+  const title = recordTitleInput?.value.trim() || "未命名手帐页";
+  const notebook = recordNotebookSelect?.value || "未选择本子";
+  const page = Number(recordPageInput?.value || journalCards.filter((card) => card.notebook === notebook).length + 1);
+  const day = Number(dateKey.slice(-2));
+  const month = Number(dateKey.slice(5, 7));
+  const year = Number(dateKey.slice(0, 4));
+  const currentCount = journalCards.filter((card) => card.dateKey === dateKey).length;
+  const imageData = readBackgroundImageData(scanResultImage);
+  const card = {
+    count: 1,
+    style: "paper-collage",
+    title,
+    notebook,
+    page,
+    tags: [],
+    dateKey,
+    day,
+    month,
+    year,
+    id: `${dateKey}-${currentCount + 1}`,
+    imageData,
+  };
+  journalCards.push(card);
+  entries[dateKey] = {
+    count: (entries[dateKey]?.count || 0) + 1,
+    style: card.style,
+    title,
+    notebook,
+    page,
+    tags: [],
+  };
+
+  const notebookCard = [...document.querySelectorAll("#notebooks-view .shelf-notebook-card")].find(
+    (item) => item.querySelector("h2")?.textContent.trim() === notebook,
+  );
+  const scanCount = notebookCard?.querySelector(".scan-count");
+  if (scanCount) scanCount.textContent = String(Number(scanCount.textContent || 0) + 1);
+
+  selectedDate = dateKey;
+  renderCalendar();
+  renderEntryCards(dateKey);
+  updateProfileStats();
+  updateMonthSummary();
+  persistAppState();
+  showView("calendar");
+}
+
+function openNotebookInfo(card) {
+  const cover = card.querySelector(".notebook-cover");
+  const title = card.querySelector("h2")?.textContent.trim() || "未命名本子";
+  const brand = card.dataset.notebookBrand?.trim();
+  const spec = card.dataset.notebookSpec?.trim();
+  const meta = [brand, spec].filter(Boolean).join(" · ");
+
+  currentNotebookCard = card;
+  currentNotebookStatus = card.dataset.notebookStatus || "writing";
+  if (notebookInfoCover && cover) {
+    notebookInfoCover.innerHTML = "";
+    notebookInfoCover.append(cover.cloneNode(true));
+  }
+  if (notebookInfoName) notebookInfoName.textContent = title;
+  if (notebookInfoMeta) {
+    notebookInfoMeta.textContent = meta;
+    notebookInfoMeta.hidden = !meta;
+  }
+  if (notebookToggleStatus) {
+    notebookToggleStatus.textContent = currentNotebookStatus === "archived" ? "重设为使用中" : "归入已归档";
+  }
+  renderNotebookArchiveCards(title);
+  showView("notebook-info");
+}
+
+function applyNotebookFilter() {
+  const filter = document.querySelector("[data-notebook-filter].active")?.dataset.notebookFilter || "all";
+  notebookShelf?.querySelectorAll("[data-empty-state]").forEach((item) => item.remove());
+  const cards = [...document.querySelectorAll("#notebooks-view [data-notebook-status]")];
+  cards.forEach((card) => {
+    card.hidden = filter !== "all" && card.dataset.notebookStatus !== filter;
+  });
+  const hasVisibleCards = cards.some((card) => !card.hidden);
+  notebookShelf?.classList.toggle("has-visible-notebooks", hasVisibleCards);
+  if (!hasVisibleCards) notebookShelf?.insertAdjacentHTML("beforeend", emptyStateMarkup("notebooks", "这里还没有本子哦"));
+}
+
+function updateNotebookStatus(card, status) {
+  if (!card) return;
+  card.dataset.notebookStatus = status;
+  currentNotebookStatus = status;
+  const statusPill = card.querySelector(".status-pill");
+  if (statusPill) {
+    statusPill.textContent = status === "archived" ? "已归档" : "使用中";
+    statusPill.classList.toggle("archived", status === "archived");
+  }
+  if (notebookToggleStatus) {
+    notebookToggleStatus.textContent = status === "archived" ? "重设为使用中" : "归入已归档";
+  }
+  applyNotebookFilter();
+}
+
+function openNotebookEdit() {
+  if (!currentNotebookCard) return;
+  const cover = currentNotebookCard.querySelector(".notebook-cover");
+  notebookEditName.value = currentNotebookCard.querySelector("h2")?.textContent.trim() || "";
+  notebookEditBrand.value = currentNotebookCard.dataset.notebookBrand || "";
+  notebookEditSpec.value = currentNotebookCard.dataset.notebookSpec || "";
+  notebookEditStatus.value = currentNotebookCard.dataset.notebookStatus || "writing";
+  pendingNotebookCover = null;
+  pendingNotebookTilt = Number(currentNotebookCard.dataset.notebookTilt || 0);
+  notebookEditImageInput.value = "";
+  notebookEditUploadHint.textContent = "拍摄封面或从相簿选择";
+  notebookEditCoverPreview.innerHTML = "";
+  if (cover) notebookEditCoverPreview.append(cover.cloneNode(true));
+  closeNotebookActionMenu();
+  showView("notebook-edit");
+}
+
+function applyCutoutCover(cover, imageUrl, tilt = 0) {
+  if (!cover || !imageUrl) return;
+  cover.classList.add("cutout-cover");
+  cover.style.backgroundImage = "";
+  cover.style.setProperty("--asset-tilt", `${tilt}deg`);
+  cover.querySelector(".cutout-image")?.remove();
+  const image = document.createElement("img");
+  image.className = "cutout-image";
+  image.alt = "";
+  image.src = imageUrl;
+  cover.prepend(image);
+}
+
+function renderNotebookNewPreview() {
+  if (!notebookNewCoverPreview || !pendingNotebookCover) return;
+  notebookNewCoverPreview.innerHTML = "";
+  const cover = document.createElement("div");
+  cover.className = "notebook-cover cutout-cover";
+  applyCutoutCover(cover, pendingNotebookCover, pendingNotebookTilt);
+  notebookNewCoverPreview.append(cover);
+  notebookNewCoverPreview.classList.add("active");
+}
+
+function createNotebookCard({ name, brand, spec, coverUrl, tilt }) {
+  const card = document.createElement("article");
+  card.className = "shelf-notebook-card";
+  card.dataset.notebookStatus = "writing";
+  card.dataset.notebookBrand = brand;
+  card.dataset.notebookSpec = spec;
+  if (coverUrl) card.dataset.notebookTilt = String(tilt);
+  card.innerHTML = `
+    <div class="notebook-cover default-cover-paper" data-default-cover>
+      <span class="status-pill">使用中</span>
+      <span class="cover-mark">2026</span>
+      <small class="scan-count">0</small>
+    </div>
+    <h2></h2>
+  `;
+  card.querySelector("h2").textContent = name;
+  if (coverUrl) {
+    const cover = card.querySelector(".notebook-cover");
+    cover.className = "notebook-cover cutout-cover";
+    applyCutoutCover(cover, coverUrl, tilt);
+  }
+  return card;
+}
+
+function renderNotebookArchiveCards(notebookName) {
+  if (!notebookInfoEntryList) return;
+  const cards = journalCards.filter((card) => card.notebook === notebookName);
+  notebookInfoEntryList.innerHTML = cards
+    .map((card) => `
+        <button class="entry-card" type="button" data-card-id="${card.id}">
+          <div class="scan-preview ${card.style.replace("today", "").trim()}"></div>
+          <div>
+            <p>${card.notebook}</p>
+            <h2>${card.title}</h2>
+            <span>${formatChineseDate(card)} · 单页扫描</span>
+          </div>
+        </button>
+      `)
+    .join("") || `<p class="empty-note">这本还没有归档手帐。</p>`;
+}
+
+function closeNotebookActionMenu() {
+  notebookActionModal?.classList.remove("open");
+  notebookActionModal?.setAttribute("aria-hidden", "true");
+}
+
+function openNotebookActionMenu() {
+  notebookActionModal?.classList.add("open");
+  notebookActionModal?.setAttribute("aria-hidden", "false");
+}
+
+function materialTypeToCategory(type) {
+  return {
+    本子: "notebooks",
+    便签: "notes",
+    贴纸: "stickers",
+    胶带: "tapes",
+  }[type] || "notebooks";
+}
+
+function materialCategoryToClass(category) {
+  return {
+    notebooks: "notebook-material",
+    notes: "ticket",
+    stickers: "leaf",
+    tapes: "grid",
+  }[category] || "notebook-material";
+}
+
+function setUploadProcessing(trigger, isProcessing) {
+  trigger?.classList.toggle("is-processing", isProcessing);
+  trigger?.setAttribute("aria-busy", String(isProcessing));
+}
+
+function formatMaterialDate(value) {
+  return value ? value.replaceAll("-", "/") : "未填写日期";
+}
+
+function formatMaterialPrice(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(2) : "0.00";
+}
+
+function readMaterialCard(card) {
+  const summaryParts = card.querySelector("p")?.textContent.split(" · ") || [];
+  return {
+    id: card.dataset.materialId,
+    type: card.dataset.materialType || "本子",
+    category: card.dataset.materialCategory || materialTypeToCategory(card.dataset.materialType),
+    name: card.querySelector("h2")?.textContent.trim() || "",
+    brand: card.dataset.materialBrand || summaryParts[0] || "",
+    date: card.dataset.materialDate || summaryParts[1]?.replaceAll("/", "-") || "",
+    price: card.dataset.materialPrice || summaryParts[2]?.replace("¥", "") || "",
+    note: card.dataset.materialNote || card.querySelector("span")?.textContent.trim() || "",
+    imageStyle: card.querySelector(".material-image")?.getAttribute("style") || "",
+    imageClass: card.querySelector(".material-image")?.className || "material-image notebook-material",
+  };
+}
+
+function setMaterialSelectValue(type) {
+  const triggerLabel = materialTypeSelect?.querySelector(":scope > button span");
+  const hiddenInput = materialTypeSelect?.querySelector("input[type='hidden']");
+  const optionButtons = materialTypeSelect?.querySelectorAll(".select-menu button") || [];
+  if (triggerLabel) triggerLabel.textContent = type;
+  if (hiddenInput) hiddenInput.value = type;
+  optionButtons.forEach((button) => {
+    button.classList.toggle("active", (button.dataset.value || button.textContent.trim()) === type);
+  });
+}
+
+function updateMaterialPreview(card = null) {
+  if (!materialDetailPreview) return;
+  materialDetailPreview.innerHTML = "";
+  const sourceImage = card?.querySelector(".material-image");
+  const sourceCutout = sourceImage?.querySelector(".cutout-image");
+  const selectedType = materialTypeSelect?.querySelector("input[type='hidden']")?.value || "本子";
+  const selectedCategory = materialTypeToCategory(selectedType);
+  const previewImage = document.createElement("div");
+  previewImage.className = `material-image ${materialCategoryToClass(selectedCategory)}`;
+
+  if ((sourceCutout || sourceImage?.style.backgroundImage) && !materialImageCleared) {
+    previewImage.className = sourceImage.className;
+    previewImage.style.setProperty("--asset-tilt", `${card?.dataset.materialTilt || 0}deg`);
+    if (sourceCutout) {
+      const image = sourceCutout.cloneNode(true);
+      previewImage.append(image);
+    } else {
+      previewImage.style.backgroundImage = sourceImage.style.backgroundImage;
+      previewImage.style.backgroundSize = "cover";
+      previewImage.style.backgroundPosition = "center";
+    }
+  }
+  if (materialImageCleared) {
+    previewImage.className = "material-image material-image-empty";
+    previewImage.removeAttribute("style");
+  }
+  if (pendingMaterialImage) {
+    previewImage.className = "material-image cutout-asset";
+    previewImage.style.setProperty("--asset-tilt", `${pendingMaterialTilt}deg`);
+    const image = document.createElement("img");
+    image.className = "cutout-image";
+    image.alt = "";
+    image.src = pendingMaterialImage;
+    previewImage.append(image);
+  }
+  materialDetailPreview.append(previewImage);
+  materialUploadTrigger?.classList.toggle("has-image", previewImage.classList.contains("cutout-asset"));
+  materialUploadTrigger?.closest(".material-upload-field")?.classList.toggle("has-image", previewImage.classList.contains("cutout-asset"));
+  materialImageRemove?.classList.toggle("hidden", previewImage.classList.contains("material-image-empty"));
+}
+
+function resetMaterialDetail() {
+  currentMaterialId = null;
+  pendingMaterialImage = null;
+  materialImageCleared = true;
+  if (materialDetailTitle) materialDetailTitle.textContent = "新增素材";
+  if (materialSaveButton) materialSaveButton.textContent = "保存素材";
+  setMaterialSelectValue("本子");
+  if (materialNameInput) materialNameInput.value = "";
+  if (materialBrandInput) materialBrandInput.value = "";
+  if (materialDateInput) materialDateInput.value = "";
+  if (materialPriceInput) materialPriceInput.value = "";
+  if (materialNoteInput) materialNoteInput.value = "";
+  if (materialImageInput) materialImageInput.value = "";
+  updateMaterialPreview();
+}
+
+function openMaterialDetail(card) {
+  const data = readMaterialCard(card);
+  currentMaterialId = data.id;
+  pendingMaterialImage = null;
+  materialImageCleared = card.querySelector(".material-image")?.classList.contains("material-image-empty") || false;
+  if (materialDetailTitle) materialDetailTitle.textContent = "素材详情";
+  if (materialSaveButton) materialSaveButton.textContent = "保存修改";
+  setMaterialSelectValue(data.type);
+  if (materialNameInput) materialNameInput.value = data.name;
+  if (materialBrandInput) materialBrandInput.value = data.brand;
+  if (materialDateInput) materialDateInput.value = data.date;
+  if (materialPriceInput) materialPriceInput.value = data.price;
+  if (materialNoteInput) materialNoteInput.value = data.note;
+  if (materialImageInput) materialImageInput.value = "";
+  updateMaterialPreview(card);
+  showView("material-detail");
+}
+
+function getMaterialFormData() {
+  const type = materialTypeSelect?.querySelector("input[type='hidden']")?.value || "本子";
+  return {
+    id: currentMaterialId || `material-${Date.now()}`,
+    type,
+    category: materialTypeToCategory(type),
+    name: materialNameInput?.value.trim() || "未命名素材",
+    brand: materialBrandInput?.value.trim() || "",
+    date: materialDateInput?.value || "",
+    price: materialPriceInput?.value ? formatMaterialPrice(materialPriceInput.value) : "",
+    note: materialNoteInput?.value.trim() || "",
+  };
+}
+
+function renderMaterialCard(card, data) {
+  const image = card.querySelector(".material-image");
+  card.dataset.materialId = data.id;
+  card.dataset.materialCategory = data.category;
+  card.dataset.materialType = data.type;
+  card.dataset.materialBrand = data.brand;
+  card.dataset.materialDate = data.date;
+  card.dataset.materialPrice = data.price;
+  card.dataset.materialNote = data.note;
+  if (image && materialImageCleared) {
+    image.className = "material-image material-image-empty";
+    image.removeAttribute("style");
+    image.innerHTML = "";
+  } else if (image && !pendingMaterialImage && !image.style.backgroundImage) {
+    image.className = `material-image ${materialCategoryToClass(data.category)}`;
+  }
+  if (image && pendingMaterialImage) {
+    card.dataset.materialTilt = String(pendingMaterialTilt);
+    image.className = "material-image cutout-asset";
+    image.style.backgroundImage = "";
+    image.style.setProperty("--asset-tilt", `${pendingMaterialTilt}deg`);
+    image.innerHTML = "";
+    const cutout = document.createElement("img");
+    cutout.className = "cutout-image";
+    cutout.alt = "";
+    cutout.src = pendingMaterialImage;
+    image.append(cutout);
+  }
+  card.querySelector("h2").textContent = data.name;
+  card.querySelector("p").textContent = `${data.brand || "未填写品牌"} · ${formatMaterialDate(data.date)} · ¥${formatMaterialPrice(data.price)}`;
+  card.querySelector("span").textContent = data.note || "还没有 Note";
+}
+
+function createMaterialCard(data, sourceCard = null) {
+  const card = sourceCard?.cloneNode(true) || document.createElement("article");
+  if (!sourceCard) {
+    card.className = "material-card";
+    card.innerHTML = `
+      <button class="material-delete-button" type="button" aria-label="删除素材"></button>
+      <div class="material-image ${materialCategoryToClass(data.category)}"></div>
+      <div>
+        <h2></h2>
+        <p></p>
+        <span></span>
+      </div>
+    `;
+  }
+  renderMaterialCard(card, data);
+  return card;
+}
+
+function syncMaterialCards(data, options = {}) {
+  let cards = document.querySelectorAll(`.material-card[data-material-id="${data.id}"]`);
+  if (!cards.length) {
+    const allPanel = document.querySelector('[data-material-panel="all"]');
+    removeEmptyState(allPanel);
+    allPanel?.append(createMaterialCard(data));
+    cards = document.querySelectorAll(`.material-card[data-material-id="${data.id}"]`);
+  }
+  cards.forEach((card) => renderMaterialCard(card, data));
+
+  const allCard = document.querySelector(`[data-material-panel="all"] .material-card[data-material-id="${data.id}"]`);
+  const categoryPanel = document.querySelector(`[data-material-panel="${data.category}"]`);
+  const categoryCards = [...document.querySelectorAll(`.material-list:not([data-material-panel="all"]) .material-card[data-material-id="${data.id}"]`)];
+  const categoryCard = categoryCards[0] || createMaterialCard(data, allCard);
+  removeEmptyState(categoryPanel);
+  categoryPanel?.append(categoryCard);
+  categoryCards.slice(1).forEach((card) => card.remove());
+  renderMaterialCard(categoryCard, data);
+  updateProfileStats();
+  updateMonthSummary();
+  renderLibraryNotebookPicker();
+  if (!options.skipPersist) persistAppState();
+}
+
+function openMaterialDeleteModal(materialId) {
+  pendingDeleteMaterialId = materialId;
+  materialDeleteModal?.classList.add("open");
+  materialDeleteModal?.setAttribute("aria-hidden", "false");
+}
+
+function closeMaterialDeleteModal() {
+  pendingDeleteMaterialId = null;
+  setMaterialDeleteMode(null);
+  materialDeleteModal?.classList.remove("open");
+  materialDeleteModal?.setAttribute("aria-hidden", "true");
+}
+
+function deleteMaterial(materialId) {
+  if (!materialId) return;
+  document.querySelectorAll(`.material-card[data-material-id="${materialId}"]`).forEach((card) => card.remove());
+  if (currentMaterialId === materialId) currentMaterialId = null;
+  updateMaterialEmptyStates();
+  updateProfileStats();
+  updateMonthSummary();
+  renderLibraryNotebookPicker();
+  persistAppState();
+}
+
+function setMaterialDeleteMode(materialId) {
+  document.querySelectorAll(".material-card.delete-mode").forEach((card) => card.classList.remove("delete-mode"));
+  if (!materialId) return;
+  document.querySelectorAll(`.material-card[data-material-id="${materialId}"]`).forEach((card) => card.classList.add("delete-mode"));
+}
+
+function getNotebookMaterialCards() {
+  return [...document.querySelectorAll('[data-material-panel="all"] .material-card')].filter((card) => {
+    return card.dataset.materialType === "本子" || card.dataset.materialCategory === "notebooks";
+  });
+}
+
+function renderLibraryNotebookPicker() {
+  if (!libraryNotebookPicker || !libraryNotebookAddButton) return;
+  const notebookMaterials = getNotebookMaterialCards();
+  libraryNotebookPicker.innerHTML = "";
+  libraryNotebookAddButton.disabled = true;
+
+  if (!notebookMaterials.length) {
+    libraryNotebookPicker.innerHTML = '<p class="empty-note">素材库里还没有本子素材。</p>';
+    return;
+  }
+
+  notebookMaterials.forEach((materialCard) => {
+    const button = document.createElement("button");
+    button.className = "selectable-notebook";
+    button.type = "button";
+    button.dataset.sourceMaterialId = materialCard.dataset.materialId;
+
+    const materialImage = materialCard.querySelector(".material-image");
+    const sourceCutout = materialImage?.querySelector(".cutout-image");
+    const cover = document.createElement("div");
+    cover.className = "notebook-cover default-cover-paper";
+
+    if (sourceCutout) {
+      cover.className = "notebook-cover cutout-cover";
+      applyCutoutCover(cover, sourceCutout.src, Number(materialCard.dataset.materialTilt || 0));
+    } else if (materialImage?.style.backgroundImage) {
+      cover.style.backgroundImage = materialImage.style.backgroundImage;
+      cover.style.backgroundSize = "cover";
+      cover.style.backgroundPosition = "center";
+    }
+
+    const title = document.createElement("span");
+    title.textContent = materialCard.querySelector("h2")?.textContent.trim() || "未命名本子";
+    button.append(cover, title);
+    libraryNotebookPicker.append(button);
+  });
+}
+
 document.querySelectorAll("[data-view]").forEach((control) => {
   control.addEventListener("click", () => showView(control.dataset.view));
+});
+
+document.querySelector('[data-view="material-detail"]')?.addEventListener("click", resetMaterialDetail);
+
+materialTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    setMaterialDeleteMode(null);
+    materialTabs.forEach((item) => item.classList.toggle("active", item === tab));
+    materialPanels.forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.materialPanel === tab.dataset.materialTab);
+    });
+  });
+});
+
+materialsView?.addEventListener("click", (event) => {
+  const deleteButton = event.target.closest(".material-delete-button");
+  if (deleteButton) {
+    event.stopPropagation();
+    const card = deleteButton.closest(".material-card");
+    openMaterialDeleteModal(card?.dataset.materialId);
+    return;
+  }
+
+  const card = event.target.closest(".material-card");
+  if (!card) {
+    setMaterialDeleteMode(null);
+    return;
+  }
+  if (suppressMaterialClick) {
+    suppressMaterialClick = false;
+    return;
+  }
+  if (card.classList.contains("delete-mode")) return;
+  openMaterialDetail(card);
+});
+
+materialsView?.addEventListener("pointerdown", (event) => {
+  const card = event.target.closest(".material-card");
+  if (!card || event.target.closest(".material-delete-button")) return;
+  clearTimeout(materialLongPressTimer);
+  materialLongPressTimer = setTimeout(() => {
+    suppressMaterialClick = true;
+    setMaterialDeleteMode(card.dataset.materialId);
+  }, 650);
+});
+
+["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => {
+  materialsView?.addEventListener(eventName, () => clearTimeout(materialLongPressTimer));
+});
+
+materialsView?.addEventListener("contextmenu", (event) => {
+  if (event.target.closest(".material-card")) event.preventDefault();
+});
+
+materialDeleteCancel?.addEventListener("click", closeMaterialDeleteModal);
+
+materialDeleteModal?.addEventListener("click", (event) => {
+  if (event.target === materialDeleteModal) closeMaterialDeleteModal();
+});
+
+materialDeleteConfirm?.addEventListener("click", () => {
+  deleteMaterial(pendingDeleteMaterialId);
+  setMaterialDeleteMode(null);
+  closeMaterialDeleteModal();
+});
+
+notebookFilterTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    notebookFilterTabs.forEach((item) => item.classList.toggle("active", item === tab));
+    applyNotebookFilter();
+  });
+});
+
+notebookShelf?.addEventListener("click", (event) => {
+  const card = event.target.closest(".shelf-notebook-card");
+  if (!card) return;
+  openNotebookInfo(card);
+});
+
+notebookActionTrigger?.addEventListener("click", openNotebookActionMenu);
+notebookToggleStatus?.addEventListener("click", () => {
+  updateNotebookStatus(currentNotebookCard, currentNotebookStatus === "archived" ? "writing" : "archived");
+  if (currentNotebookCard) openNotebookInfo(currentNotebookCard);
+  closeNotebookActionMenu();
+});
+notebookEditInfo?.addEventListener("click", openNotebookEdit);
+
+document.addEventListener("click", (event) => {
+  if (!notebookActionModal?.classList.contains("open")) return;
+  if (event.target.closest("#notebook-action-modal") || event.target.closest("#notebook-action-trigger")) return;
+  closeNotebookActionMenu();
+});
+
+document.querySelectorAll(".detail-switch button").forEach((button) => {
+  button.addEventListener("click", () => {
+    button.parentElement.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
+  });
+});
+
+notebookModeTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    notebookModeTabs.forEach((item) => item.classList.toggle("active", item === tab));
+    notebookModePanels.forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.notebookPanel === tab.dataset.notebookMode);
+    });
+  });
+});
+
+document.querySelectorAll(".selectable-notebook").forEach((card) => {
+  card.addEventListener("click", () => {
+    document.querySelectorAll(".selectable-notebook").forEach((item) => item.classList.toggle("selected", item === card));
+  });
+});
+
+libraryNotebookPicker?.addEventListener("click", (event) => {
+  const card = event.target.closest(".selectable-notebook");
+  if (!card) return;
+  libraryNotebookPicker.querySelectorAll(".selectable-notebook").forEach((item) => {
+    item.classList.toggle("selected", item === card);
+  });
+  if (libraryNotebookAddButton) libraryNotebookAddButton.disabled = false;
+});
+
+libraryNotebookAddButton?.addEventListener("click", () => {
+  const selected = libraryNotebookPicker?.querySelector(".selectable-notebook.selected");
+  if (!selected) return;
+  const source = document.querySelector(`[data-material-panel="all"] .material-card[data-material-id="${selected.dataset.sourceMaterialId}"]`);
+  if (!source) return;
+
+  const card = createNotebookCard({
+    name: source.querySelector("h2")?.textContent.trim() || "未命名本子",
+    brand: source.dataset.materialBrand || "",
+    spec: source.dataset.materialNote || "",
+    coverUrl: readCutoutData(source.querySelector(".material-image")),
+    tilt: Number(source.dataset.materialTilt || 0),
+  });
+
+  removeEmptyState(notebookShelf);
+  notebookShelf?.append(card);
+  applyNotebookFilter();
+  updateRecordNotebookOptions();
+  updateProfileStats();
+  updateMonthSummary();
+  persistAppState();
+  showView("notebooks");
 });
 
 entryCardList.addEventListener("click", (event) => {
@@ -1915,59 +4587,255 @@ entryCardList.addEventListener("click", (event) => {
   openStory(card.dataset.cardId);
 });
 
+notebookInfoEntryList?.addEventListener("click", (event) => {
+  const card = event.target.closest(".entry-card");
+  if (!card) return;
+  openStory(card.dataset.cardId);
+});
+
 clearFilter.addEventListener("click", () => {
-  selectedDay = null;
-  document.querySelectorAll(".day-cell").forEach((cell) => cell.classList.remove("selected"));
+  selectedDate = null;
+  renderCalendar();
   renderEntryCards();
+  updateMonthSummary();
 });
 
 document.querySelector("#story-close").addEventListener("click", closeStory);
-renderEntryCards();
+prevMonth.addEventListener("click", () => {
+  if (currentMonthIndex === 0) return;
+  currentMonthIndex -= 1;
+  selectedDate = null;
+  renderCalendar();
+  renderEntryCards();
+  updateMonthSummary();
+});
+nextMonth.addEventListener("click", () => {
+  if (currentMonthIndex === calendarMonths.length - 1) return;
+  currentMonthIndex += 1;
+  selectedDate = null;
+  renderCalendar();
+  renderEntryCards();
+  updateMonthSummary();
+});
+async function initApp() {
+  await loadPersistedState();
+  renderCalendar();
+  renderEntryCards();
+  updateRecordNotebookOptions();
+  updateProfileStats();
+  updateMonthSummary();
+}
+
+initApp();
 
 homeAddButton.addEventListener("click", () => {
-  sourceSheet.classList.add("open");
-  sourceSheet.setAttribute("aria-hidden", "false");
+  scanInput.click();
 });
 
-function closeSourceSheet() {
-  sourceSheet.classList.remove("open");
-  sourceSheet.setAttribute("aria-hidden", "true");
-}
-
-function pickImage(source) {
-  if (source === "camera") {
-    scanInput.setAttribute("capture", "environment");
-  } else {
-    scanInput.removeAttribute("capture");
-  }
-
-  scanInput.click();
-}
-
-sheetBackdrop.addEventListener("click", closeSourceSheet);
-sourceCancel.addEventListener("click", closeSourceSheet);
-cameraOption.addEventListener("click", () => pickImage("camera"));
-albumOption.addEventListener("click", () => pickImage("album"));
 recordBack.addEventListener("click", () => showView("calendar"));
 
 scanInput.addEventListener("change", () => {
-  if (!scanInput.files.length) return;
-
-  closeSourceSheet();
-  showView("record");
+  const file = scanInput.files[0];
+  if (!file) return;
   scanForm.classList.remove("scanned");
   scanForm.classList.add("scanning");
-  scanStatus.textContent = "正在检测页面边缘...";
+  scanStatus.textContent = "等待选择页面边界...";
+  openDocumentScanner(file);
+});
 
-  window.setTimeout(() => {
-    scanStatus.textContent = "正在校正透视和提亮...";
-  }, 700);
+scannerHandles.forEach((handle) => {
+  handle.addEventListener("pointerdown", (event) => {
+    activeScannerCorner = handle.dataset.corner;
+    handle.setPointerCapture(event.pointerId);
+    updateScannerCorner(event);
+  });
 
-  window.setTimeout(() => {
-    scanForm.classList.remove("scanning");
-    scanForm.classList.add("scanned");
-    scanStatus.textContent = "扫描完成";
-  }, 1400);
+  handle.addEventListener("pointermove", updateScannerCorner);
+  handle.addEventListener("pointerup", () => {
+    activeScannerCorner = null;
+  });
+});
+
+scannerCancel?.addEventListener("click", () => {
+  closeDocumentScanner();
+  scanInput.value = "";
+  scanForm.classList.remove("scanning");
+});
+
+scannerRetake?.addEventListener("click", () => {
+  closeDocumentScanner();
+  scanInput.value = "";
+  scanInput.click();
+});
+
+scannerFinish?.addEventListener("click", finishDocumentScan);
+recordSaveButton?.addEventListener("click", saveRecordEntry);
+
+function closeCustomSelects(except = null) {
+  customSelects.forEach((select) => {
+    if (select === except) return;
+    select.classList.remove("open");
+    select.querySelector(":scope > button")?.setAttribute("aria-expanded", "false");
+  });
+}
+
+customSelects.forEach((select) => {
+  const trigger = select.querySelector(":scope > button");
+  const triggerLabel = trigger?.querySelector("span");
+  const hiddenInput = select.querySelector("input[type='hidden']");
+  const optionButtons = select.querySelectorAll(".select-menu button");
+
+  trigger?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const willOpen = !select.classList.contains("open");
+    closeCustomSelects(select);
+    select.classList.toggle("open", willOpen);
+    trigger.setAttribute("aria-expanded", String(willOpen));
+  });
+
+  optionButtons.forEach((option) => {
+    option.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const value = option.dataset.value || option.textContent.trim();
+      optionButtons.forEach((item) => item.classList.toggle("active", item === option));
+      if (triggerLabel) triggerLabel.textContent = value;
+      if (hiddenInput) hiddenInput.value = value;
+      if (select === materialTypeSelect && !pendingMaterialImage) {
+        const activeCard = currentMaterialId ? document.querySelector(`.material-card[data-material-id="${currentMaterialId}"]`) : null;
+        if (currentMaterialId && !activeCard?.querySelector(".material-image")?.style.backgroundImage) materialImageCleared = false;
+        updateMaterialPreview(activeCard);
+      }
+      closeCustomSelects();
+    });
+  });
+});
+
+document.addEventListener("click", () => closeCustomSelects());
+
+materialUploadTrigger?.addEventListener("click", () => {
+  materialImageInput?.click();
+});
+
+materialImageRemove?.addEventListener("click", () => {
+  pendingMaterialImage = null;
+  materialImageCleared = true;
+  if (materialImageInput) materialImageInput.value = "";
+  updateMaterialPreview();
+});
+
+materialImageInput?.addEventListener("change", async () => {
+  const file = materialImageInput.files[0];
+  if (!file) return;
+  setUploadProcessing(materialUploadTrigger, true);
+  try {
+    pendingMaterialImage = await prepareCutoutImage(file);
+    pendingMaterialTilt = randomTilt();
+    materialImageCleared = false;
+    const activeCard = currentMaterialId ? document.querySelector(`.material-card[data-material-id="${currentMaterialId}"]`) : null;
+    updateMaterialPreview(activeCard);
+  } finally {
+    setUploadProcessing(materialUploadTrigger, false);
+  }
+});
+
+materialDetailForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const data = getMaterialFormData();
+  if (!currentMaterialId && materialImageCleared && !pendingMaterialImage) materialImageCleared = false;
+  syncMaterialCards(data);
+  currentMaterialId = data.id;
+  pendingMaterialImage = null;
+  showView("materials");
+});
+
+notebookUploadTrigger?.addEventListener("click", () => {
+  notebookImageInput?.click();
+});
+
+notebookImageInput?.addEventListener("change", async () => {
+  const file = notebookImageInput.files[0];
+  if (!file || !notebookUploadHint) return;
+  setUploadProcessing(notebookUploadTrigger, true);
+  notebookUploadHint.textContent = "正在抠出本子封面...";
+  try {
+    pendingNotebookCover = await prepareCutoutImage(file);
+    pendingNotebookTilt = randomTilt();
+    renderNotebookNewPreview();
+    notebookUploadHint.textContent = `已选择 ${file.name}`;
+  } finally {
+    setUploadProcessing(notebookUploadTrigger, false);
+  }
+});
+
+notebookNewForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = notebookNewName?.value.trim() || "未命名本子";
+  const card = createNotebookCard({
+    name,
+    brand: notebookNewBrand?.value.trim() || "",
+    spec: notebookNewSpec?.value.trim() || "",
+    coverUrl: pendingNotebookCover,
+    tilt: pendingNotebookTilt,
+  });
+  removeEmptyState(notebookShelf);
+  notebookShelf?.append(card);
+  applyNotebookFilter();
+  updateRecordNotebookOptions();
+  updateProfileStats();
+  updateMonthSummary();
+  persistAppState();
+  showView("notebooks");
+});
+
+notebookEditUploadTrigger?.addEventListener("click", () => {
+  notebookEditImageInput?.click();
+});
+
+notebookEditImageInput?.addEventListener("change", async () => {
+  const file = notebookEditImageInput.files[0];
+  if (!file || !currentNotebookCard) return;
+  setUploadProcessing(notebookEditUploadTrigger, true);
+  notebookEditUploadHint.textContent = "正在抠出本子封面...";
+  try {
+    pendingNotebookCover = await prepareCutoutImage(file);
+    pendingNotebookTilt = randomTilt();
+    const previewCover = currentNotebookCard.querySelector(".notebook-cover")?.cloneNode(true);
+    if (previewCover) {
+      applyCutoutCover(previewCover, pendingNotebookCover, pendingNotebookTilt);
+      notebookEditCoverPreview.innerHTML = "";
+      notebookEditCoverPreview.append(previewCover);
+    }
+    notebookEditUploadHint.textContent = `已选择 ${file.name}`;
+  } finally {
+    setUploadProcessing(notebookEditUploadTrigger, false);
+  }
+});
+
+notebookEditForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!currentNotebookCard || !notebookEditName.value.trim()) return;
+
+  const previousName = currentNotebookCard.querySelector("h2")?.textContent.trim() || "";
+  const nextName = notebookEditName.value.trim();
+  currentNotebookCard.querySelector("h2").textContent = nextName;
+  currentNotebookCard.dataset.notebookBrand = notebookEditBrand.value.trim();
+  currentNotebookCard.dataset.notebookSpec = notebookEditSpec.value.trim();
+
+  if (pendingNotebookCover) {
+    const cover = currentNotebookCard.querySelector(".notebook-cover");
+    currentNotebookCard.dataset.notebookTilt = String(pendingNotebookTilt);
+    applyCutoutCover(cover, pendingNotebookCover, pendingNotebookTilt);
+  }
+
+  journalCards.forEach((card) => {
+    if (card.notebook === previousName) card.notebook = nextName;
+  });
+  updateNotebookStatus(currentNotebookCard, notebookEditStatus.value);
+  updateRecordNotebookOptions();
+  updateProfileStats();
+  updateMonthSummary();
+  persistAppState();
+  showView("notebooks");
 });
 
     </script>
